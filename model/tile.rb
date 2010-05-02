@@ -1,34 +1,31 @@
 class Tile
   def initialize
-    @start_positions = [
-      {:x => 2, :y => 28, :taken => false, :angle => 180},
-      {:x => Car.length + 4, :y => 28, :taken => false, :angle => 180},
-      {:x => Car.length * 2 + 4, :y => 28, :taken => false, :angle => 180},
-      {:x => Car.length + 2, :y => 32, :taken => false, :angle => 0},
-      {:x => Car.length * 2 + 2, :y => 32, :taken => false, :angle => 0},
-      {:x => Car.length * 3 + 2, :y => 32, :taken => false, :angle => 0},
-    ]
+		@paths = []
+		@paths << Path.new(lambda {|s| [s, 25]}, Tile.width) #entrance from west
+		@paths << Path.new(lambda {|s| [Tile.width - s, 35]}, Tile.width) #entrance from east
+
+		@start_positions = []
+		@paths.each do |p|
+			distance = 1 + Car.length
+			while distance <= p.length
+				@start_positions << {:distance => distance, :path => p}
+				distance += Car.length + 2
+			end
+		end
   end
 
-  def first_free_pos
-    pos = @start_positions.select{|p| !p[:taken]}
-    return false if pos.empty?
-    pos = pos.first
-    pos[:taken] = true
-    pos
+	def paths(entrance_point)
+		@paths.select{|p| p.point(0) == entrance_point}
+	end
+
+  def start_pos
+		@start_positions.shift
   end
 
   def solid_lines
-    [
-      [0, 20, self.class.width, 20],
-      [0, 40, self.class.width, 40]
-    ]
   end
 
   def marked_lines
-    [
-      [0, 30, self.class.width, 30]
-    ]
   end
 
   class << self

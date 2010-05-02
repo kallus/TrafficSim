@@ -1,0 +1,9 @@
+MODEL
+has Tiles
+has Cars
+
+TILE
+has Paths
+is 60x60 pixels
+uses mathematical coordinates (0,0) at lower left corner
+implements paths(entrance point)
