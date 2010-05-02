@@ -22,12 +22,6 @@ class Tile
 		@start_positions.shift
   end
 
-  def solid_lines
-  end
-
-  def marked_lines
-  end
-
   class << self
     def width
       60
