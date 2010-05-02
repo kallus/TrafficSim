@@ -1,14 +1,19 @@
 class Model
-  attr :state
+	attr :cars
+	attr :tile_grid
 
   def initialize
-    @state = State.new
-    @state.tile_rows << [Tile.new, Tile.new, Tile.new]
-    @state.tile_rows.each do |row|
-      row.each do |tile|
-        pos = tile.first_free_pos
-        @state.cars << Car.new(pos[:x], pos[:y], pos[:angle])
+		@cars = []
+		@tile_grid = []
+    @tile_grid << [Tile.new, Tile.new, Tile.new]
+    @tile_grid.each_with_index do |tiles, y|
+      tiles.each_with_index do |tile, x|
+        start = tile.start_pos
+        @cars << Car.new(start[:path], start[:distance], [x,y])
       end
     end
   end
+
+	def step!
+	end
 end

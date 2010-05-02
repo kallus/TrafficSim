@@ -1,15 +1,23 @@
 class Car
-  attr :x
-  attr :y
   attr :angle
-  attr :current_tile
-  attr :next_tile
+	attr :current_path
+	attr :next_path
+	attr :grid_pos
 
-  def initialize(x, y, angle)
-    @x = x
-    @y = y
-    @angle = angle
+  def initialize(path, distance, grid_pos)
+    @angle = 0
+		@current_path = path
+		@distance = distance
+		@grid_pos = grid_pos
+		@next_path = path #for now
   end
+
+	def pos
+		pos = @current_path.point(@distance)
+		pos[0] += grid_pos[0] * Tile.width
+		pos[1] += grid_pos[1] * Tile.height
+		pos
+	end
 
   class << self
     def length
