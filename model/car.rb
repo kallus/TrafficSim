@@ -2,6 +2,8 @@ class Car
   attr :x
   attr :y
   attr :angle
+  attr :current_tile
+  attr :next_tile
 
   def initialize(x, y, angle)
     @x = x
