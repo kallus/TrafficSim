@@ -5,12 +5,14 @@ RVG::dpi = 144
 
 class Vector
   class << self
-    def draw!(cars, tile_grid)
+    def draw!(cars, tile_grid, time)
       @rvg = RVG.new(
           (tile_grid[0].length*2.5).in,
           (tile_grid.length*2.5).in
         ).viewbox(0,0,tile_grid[0].length*Tile.width,tile_grid.length*Tile.height) do |canvas|
         canvas.background_fill = 'white'
+
+        canvas.g.scale(0.5).text(2, 15, "Time: #{time} sec")
 
         tile_grid.reverse.each_with_index do |tiles, y|
           tiles.each_with_index do |tile, x|
@@ -24,7 +26,7 @@ class Vector
 
       end
 
-      @rvg.draw.write('state.gif')
+      @rvg.draw.write("output/#{("%06.2f" % [time]).sub(".", "")}.gif")
     end
 
     def tile!(canvas, tile, x, y)

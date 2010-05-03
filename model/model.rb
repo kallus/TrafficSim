@@ -1,8 +1,10 @@
 class Model
 	attr :cars
 	attr :tile_grid
+  attr_reader :time
 
   def initialize
+    @time = 0
 		@cars = []
 		@tile_grid = []
     @tile_grid << [Tile.new, Tile.new, Tile.new]
@@ -15,13 +17,10 @@ class Model
     end
   end
 
-	def step!
+	def step!(step_length) #seconds
 		cars.each do |c|
 			c.step!(step_length)
 		end
-	end
-
-	def step_length #seconds
-		0.8
+    @time += step_length
 	end
 end
