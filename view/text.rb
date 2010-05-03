@@ -1,9 +1,8 @@
 class Text
 	class << self
 		def draw!(cars, tile_grid)
-			puts "Tile grid"
-			tile_grid.each do |tiles|
-				print "Tile row: "
+      puts "Tiles"
+			tile_grid.reverse.each do |tiles|
 				tiles.each do |t|
 					print t.class, "\t"
 				end
