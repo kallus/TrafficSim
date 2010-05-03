@@ -37,13 +37,8 @@ class Vector
             solid.line(0, 35, Tile.width, 35)
             solid.line(0, 25, Tile.width, 25)
           when TurnSwTile
-            solid.line(0, 25, 20, 25)
-            solid.line(20, 25, 25, 20)
-            solid.line(25, 20, 25, 0)
-
-            solid.line(0, 35, 20, 35)
-            solid.line(20, 35, 35, 20)
-            solid.line(35, 20, 35, 0)
+            solid.path('M0,25 a25,25 0 0,0 25,-25').styles(:fill=>'none')
+            solid.path('M0,35 a35,35 0 0,0 35,-35').styles(:fill=>'none')
         end
       end
     end
