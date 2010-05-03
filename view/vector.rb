@@ -36,6 +36,14 @@ class Vector
           when HorizontalTile
             solid.line(0, 35, Tile.width, 35)
             solid.line(0, 25, Tile.width, 25)
+          when TurnSwTile
+            solid.line(0, 25, 20, 25)
+            solid.line(20, 25, 25, 20)
+            solid.line(25, 20, 25, 0)
+
+            solid.line(0, 35, 20, 35)
+            solid.line(20, 35, 35, 20)
+            solid.line(35, 20, 35, 0)
         end
       end
     end

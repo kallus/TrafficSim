@@ -7,11 +7,14 @@ class Model
     @time = 0
 		@cars = []
 		@tile_grid = []
-    @tile_grid << [HorizontalTile.new, HorizontalTile.new, HorizontalTile.new]
+    @tile_grid << [HorizontalTile.new, HorizontalTile.new, TurnSwTile.new]
     @tile_grid.each_with_index do |tiles, y|
       tiles.each_with_index do |tile, x|
-        start = tile.start_pos
-        @cars << Car.new(start[:path], start[:distance], [x,y], tile_grid)
+        while true do
+          start = tile.start_pos
+          break unless start
+          @cars << Car.new(start[:path], start[:distance], [x,y], tile_grid)
+        end
       end
     end
   end
