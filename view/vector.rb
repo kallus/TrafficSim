@@ -33,7 +33,7 @@ class Vector
       canvas.g.translate(x, y) do |solid|
         solid.styles(:stroke=>'black', :stroke_width=>0.2)
         case tile
-          when Tile
+          when HorizontalTile
             solid.line(0, 35, Tile.width, 35)
             solid.line(0, 25, Tile.width, 25)
         end

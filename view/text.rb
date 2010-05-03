@@ -12,8 +12,9 @@ class Text
 
 			puts "CARS"
 			cars.each do |c|
-				puts "(%4d,%4d) %3d\n\n" % [c.pos[0], c.pos[1], c.angle]
+				puts "(%4d,%4d) %3d" % [c.pos[0], c.pos[1], c.angle]
 			end
+      puts "\n"
 		end
 	end
 end
