@@ -19,7 +19,7 @@ class Tile
 	end
 
   def start_pos
-		@start_positions.shift
+		@start_positions.delete_at(rand(@start_positions.length))
   end
 
   class << self

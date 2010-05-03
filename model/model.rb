@@ -12,7 +12,6 @@ class Model
       tiles.each_with_index do |tile, x|
         start = tile.start_pos
         @cars << Car.new(start[:path], start[:distance], [x,y], tile_grid)
-				break
       end
     end
   end
@@ -21,6 +20,7 @@ class Model
 		cars.each do |c|
 			c.step!(step_length)
 		end
+    cars.delete_if{|c| c.dead}
     @time += step_length
 	end
 end
