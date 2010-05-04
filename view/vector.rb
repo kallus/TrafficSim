@@ -1,7 +1,7 @@
 require 'rvg/rvg'
 include Magick
 
-RVG::dpi = 144
+RVG::dpi = 144/2
 
 class Vector
   class << self
@@ -15,7 +15,7 @@ class Vector
         canvas.background_fill = 'white'
         canvas.matrix(1, 0, 0, -1, 0, (grid_size[1]*2.5).in) #changing to cartesian coordinates
 
-        canvas.g.translate(0,2).matrix(1,0,0,-1,0,0).scale(0.5).text(0, 0, "Time: #{time} sec")
+        canvas.g.translate(0,2).matrix(1,0,0,-1,0,0).scale(0.5).text(0, 0, "Time: %.2f sec" % [time])
 
         tile_grid.each_with_index do |tiles, y|
           tiles.each_with_index do |tile, x|
@@ -51,6 +51,12 @@ class Vector
           when TurnSeTile
             path!(solid, tile.paths([Tile.width,35]).first)
             path!(solid, tile.paths([35,0]).first)
+          when TcrossNTile
+            paths = tile.paths([0,25]) + tile.paths([35,0]) + tile.paths([Tile.width,35])
+            paths.each { |p| path!(solid,p)}
+          when TcrossSTile
+            paths = tile.paths([0,25]) + tile.paths([25,Tile.height]) + tile.paths([Tile.width,35])
+            paths.each { |p| path!(solid,p)}
         end
       end
     end
@@ -59,14 +65,21 @@ class Vector
       canvas.g.translate(*car.pos).rotate(car.angle) do |c|
         c.styles(:fill => 'black', :stroke => "black", :stroke_width => 0.1)
         c.circle(0.5,0,0)
-        c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.2).text(0,0, "(%d,%d)\n(%d,%d)\n%s\n(%d,%d)\n(%d,%d)" % (car.grid_pos + car.next_grid_pos + [car.tile.class] + car.current_path.end_point + car.current_path.end_direction))
+        c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.25).text(0,0, "Speed: %.1f m/s" % [car.speed])
+#c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.2).text(0,0, "(%d,%d)\n(%d,%d)\n%s\n(%d,%d)\n(%d,%d)" % (car.grid_pos + car.next_grid_pos + [car.tile.class] + car.current_path.end_point + car.current_path.end_direction))
       end
+      canvas.g.translate(*car.tail).rotate(car.angle) do |c|
+        c.styles(:fill => 'black', :stroke => "black", :stroke_width => 0.1)
+        c.circle(0.5,0,0)
+      end
+      canvas.line(*(car.pos+car.tail))
     end
 
     def path!(canvas, path)
-      for i in 1..path.length.floor do
+      (1..path.length).to_a.each do |i|
         canvas.line(*(path.point(i-1) + path.point(i)))
       end
+      canvas.line(*(path.point(path.length-1) + path.end_point))
     end
   end
 end

@@ -16,7 +16,7 @@ class TurnNeTile < Tile
       if s < 20 then [25, Tile.height-s]
       elsif s < 20 + r/2*Math::PI then
         [40-r*Math.cos((s-20)/r), 40-r*Math.sin((s-20)/r)]
-      else [40+s-r/2*Math::PI, 25]
+      else [20+s-r/2*Math::PI, 25]
       end
     end
 		@paths << Path.new(entrance_east, 40+2.5*Math::PI, [35,Tile.height])

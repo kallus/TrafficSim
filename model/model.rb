@@ -7,8 +7,8 @@ class Model
     @time = 0
 		@cars = []
 		@tile_grid = []
-    @tile_grid << [TurnSeTile.new, HorizontalTile.new, TurnSwTile.new]
-    @tile_grid << [TurnNeTile.new, HorizontalTile.new, TurnNwTile.new]
+    @tile_grid << [TurnSeTile.new, TcrossNTile.new, TurnSwTile.new]
+    @tile_grid << [TurnNeTile.new, TcrossSTile.new, TurnNwTile.new]
     @tile_grid.reverse!
     @tile_grid.each_with_index do |tiles, y|
       tiles.each_with_index do |tile, x|

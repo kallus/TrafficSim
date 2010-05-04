@@ -2,7 +2,7 @@ class Car
   attr :angle
 	attr :current_path
 	attr :grid_pos
-  attr_reader :dead
+  attr :dead
 
   def initialize(path, distance, grid_pos, tile_grid)
     @dead = false
@@ -29,15 +29,26 @@ class Car
 		if @distance > current_path.length then
 			@distance -= current_path.length
       temporary_path = next_path
+      @prev_grid_pos = @grid_pos
 			@grid_pos = next_grid_pos
+      @prev_path = @current_path
       @current_path = temporary_path
       @dead = true unless @current_path
 		end
 	end
 
+  def tail
+    t_dist = @distance-Car.length
+    if t_dist < 0 #dont let this happen when prev_path is not set
+      local_to_global(@prev_path.point(@prev_path.length+t_dist),@prev_grid_pos)
+    else
+      local_to_global(@current_path.point(t_dist))
+    end
+  end
+
   class << self
     def length
-      10
+      7
     end
 
     def width
@@ -71,8 +82,8 @@ class Car
   end
 		
 	private
-	def local_to_global(pos)
-		[pos[0] + grid_pos[0] * Tile.width,
-		pos[1] + grid_pos[1] * Tile.height]
+	def local_to_global(pos, gpos = grid_pos)
+		[pos[0] + gpos[0] * Tile.width,
+		pos[1] + gpos[1] * Tile.height]
 	end
 end
