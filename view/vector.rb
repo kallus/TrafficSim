@@ -6,15 +6,18 @@ RVG::dpi = 144
 class Vector
   class << self
     def draw!(cars, tile_grid, time)
+      grid_size = [tile_grid[0].length,tile_grid.length]
+      size = [grid_size[0]*Tile.width,grid_size[1]*Tile.height]
       @rvg = RVG.new(
-          (tile_grid[0].length*2.5).in,
-          (tile_grid.length*2.5).in
-        ).viewbox(0,0,tile_grid[0].length*Tile.width,tile_grid.length*Tile.height) do |canvas|
+          (grid_size[0]*2.5).in,
+          (grid_size[1]*2.5).in
+        ).viewbox(0,0,size[0],size[1]) do |canvas|
         canvas.background_fill = 'white'
+        canvas.matrix(1, 0, 0, -1, 0, (grid_size[1]*2.5).in) #changing to cartesian coordinates
 
-        canvas.g.scale(0.5).text(2, 15, "Time: #{time} sec")
+        canvas.g.translate(0,2).matrix(1,0,0,-1,0,0).scale(0.5).text(0, 0, "Time: #{time} sec")
 
-        tile_grid.reverse.each_with_index do |tiles, y|
+        tile_grid.each_with_index do |tiles, y|
           tiles.each_with_index do |tile, x|
             tile!(canvas, tile, x*Tile.width, y*Tile.height)
           end
@@ -37,21 +40,32 @@ class Vector
             solid.line(0, 35, Tile.width, 35)
             solid.line(0, 25, Tile.width, 25)
           when TurnSwTile
-            solid.line(0, 25, 20, 25)
-            solid.line(20, 25, 25, 20)
-            solid.line(25, 20, 25, 0)
-
-            solid.line(0, 35, 20, 35)
-            solid.line(20, 35, 35, 20)
-            solid.line(35, 20, 35, 0)
+            path!(solid, tile.paths([0,25]).first)
+            path!(solid, tile.paths([35,0]).first)
+          when TurnNeTile
+            path!(solid, tile.paths([Tile.width,35]).first)
+            path!(solid, tile.paths([25,Tile.height]).first)
+          when TurnNwTile
+            path!(solid, tile.paths([0,25]).first)
+            path!(solid, tile.paths([25,Tile.height]).first)
+          when TurnSeTile
+            path!(solid, tile.paths([Tile.width,35]).first)
+            path!(solid, tile.paths([35,0]).first)
         end
       end
     end
 
     def car!(canvas, car)
       canvas.g.translate(*car.pos).rotate(car.angle) do |c|
-        c.styles(:fill => 'white', :stroke => "black", :stroke_width => 0.1)
-        c.circle(2,0,0)
+        c.styles(:fill => 'black', :stroke => "black", :stroke_width => 0.1)
+        c.circle(0.5,0,0)
+        c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.2).text(0,0, "(%d,%d)\n(%d,%d)\n%s\n(%d,%d)\n(%d,%d)" % (car.grid_pos + car.next_grid_pos + [car.tile.class] + car.current_path.end_point + car.current_path.end_direction))
+      end
+    end
+
+    def path!(canvas, path)
+      for i in 1..path.length.floor do
+        canvas.line(*(path.point(i-1) + path.point(i)))
       end
     end
   end

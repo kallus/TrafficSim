@@ -1,7 +1,7 @@
 require "trafficsim"
 require "view/vector"
 
-settings = {:step => 0.3, :end => 2}
+settings = {:step => 0.3, :end => 5}
 
 model = Model.new
 

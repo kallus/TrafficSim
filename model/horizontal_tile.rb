@@ -1,8 +1,8 @@
 class HorizontalTile < Tile
   def initialize
 		@paths = []
-		@paths << Path.new(lambda {|s| [s, 25]}, Tile.width) #entrance from west
-		@paths << Path.new(lambda {|s| [Tile.width - s, 35]}, Tile.width) #entrance from east
+		@paths << Path.new(lambda {|s| [s, 25]}, Tile.width, [Tile.width,25]) #entrance from west
+		@paths << Path.new(lambda {|s| [Tile.width - s, 35]}, Tile.width, [0,35]) #entrance from east
 
 		@start_positions = []
 		@paths.each do |p|

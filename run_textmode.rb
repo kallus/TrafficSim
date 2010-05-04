@@ -1,7 +1,7 @@
 require "trafficsim"
 require "view/text"
 
-settings = {:step => 0.8, :end => 5}
+settings = {:step => 0.1, :end => 1}
 
 model = Model.new
 

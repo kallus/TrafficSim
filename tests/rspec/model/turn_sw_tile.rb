@@ -7,11 +7,11 @@ describe TurnSwTile, "#paths" do
     w.length.should == 1
     w = w.first
     (1..w.length.floor).to_a.each do |i|
+#puts "#{i}: (#{w.point(i)[0]},#{w.point(i)[1]})"
       (w.point(i)[0] >= w.point(i-1)[0]).should be_true
       (w.point(i)[1] <= w.point(i-1)[1]).should be_true
       (w.point(i) == w.point(i-1)).should be_false
       w.point(i).each{|p| (p >= 0 && p <= Tile.width).should be_true}
-      #puts "#{i}: (#{w.point(i)[0]},#{w.point(i)[1]})"
     end
   end
 
