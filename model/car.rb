@@ -1,41 +1,41 @@
 class Car
   attr :angle
-	attr :current_path
-	attr :grid_pos
+  attr :current_path
+  attr :grid_pos
   attr :dead
 
   def initialize(path, distance, grid_pos, tile_grid)
     @dead = false
     @angle = 0
-		@current_path = path
-		@distance = distance
-		@grid_pos = grid_pos
-		@tile_grid = tile_grid
+    @current_path = path
+    @distance = distance
+    @grid_pos = grid_pos
+    @tile_grid = tile_grid
     @grid_size = [@tile_grid[0].length,@tile_grid.length]
   end
 
-	def pos
-		pos = @current_path.point(@distance)
-		local_to_global(pos)
-	end
+  def pos
+    pos = @current_path.point(@distance)
+    local_to_global(pos)
+  end
 
-	def speed #(m/s)
-		10
-	end
+  def speed #(m/s)
+    10
+  end
 
-	def step!(time) #seconds
-		@distance += speed * time
-
-		if @distance > current_path.length then
-			@distance -= current_path.length
+  def step!(time) #seconds
+    @distance += speed * time
+    
+    if @distance > current_path.length then
+      @distance -= current_path.length
       temporary_path = next_path
       @prev_grid_pos = @grid_pos
-			@grid_pos = next_grid_pos
+      @grid_pos = next_grid_pos
       @prev_path = @current_path
       @current_path = temporary_path
       @dead = true unless @current_path
-		end
-	end
+    end
+  end
 
   def tail
     t_dist = @distance-Car.length
@@ -56,10 +56,10 @@ class Car
     end
   end
 
-	def next_grid_pos
-		[grid_pos[0] + current_path.end_direction[0],
-		grid_pos[1] + current_path.end_direction[1]]
-	end
+  def next_grid_pos
+    [grid_pos[0] + current_path.end_direction[0],
+     grid_pos[1] + current_path.end_direction[1]]
+  end
 
   def next_path
     n = next_grid_pos
@@ -74,16 +74,16 @@ class Car
       return false
     end
 
-    return paths.first
+    return paths[rand(paths.length)]
   end
 
   def tile
     @tile_grid[@grid_pos[1]][@grid_pos[0]]
   end
 		
-	private
-	def local_to_global(pos, gpos = grid_pos)
-		[pos[0] + gpos[0] * Tile.width,
-		pos[1] + gpos[1] * Tile.height]
-	end
+  private
+  def local_to_global(pos, gpos = grid_pos)
+    [pos[0] + gpos[0] * Tile.width,
+     pos[1] + gpos[1] * Tile.height]
+  end
 end
