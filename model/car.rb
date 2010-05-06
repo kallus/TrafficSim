@@ -3,8 +3,14 @@ class Car
   attr :current_path
   attr :grid_pos
   attr :dead
+  attr_reader :distance
+  attr_reader :number
+  @@serial_number = 1
 
   def initialize(path, distance, grid_pos, tile_grid)
+    @number = @@serial_number
+    @@serial_number += 1
+
     @dead = false
     @angle = 0
     @current_path = path
@@ -18,6 +24,8 @@ class Car
     @jerk = 0.2
     @max_speed = 10
     @max_acceleration = 2
+
+    path.add_car!(self)
   end
 
   def pos
@@ -33,13 +41,18 @@ class Car
     @distance += speed * time
     
     if @distance > current_path.length then
+      @current_path.delete_car!(self)
       @distance -= current_path.length
       temporary_path = next_path
       @prev_grid_pos = @grid_pos
       @grid_pos = next_grid_pos
       @prev_path = @current_path
       @current_path = temporary_path
-      @dead = true unless @current_path
+      if @current_path
+        @current_path.add_car!(self)
+      else
+        @dead = true
+      end
     end
 
     if @acceleration < @max_acceleration
@@ -94,6 +107,41 @@ class Car
     end
 
     return paths[rand(paths.length)]
+  end
+
+  def distance_to_next_car
+    inf = -1  # should come up with something better
+    if @current_path == nil
+      return inf 
+    end
+
+    cars_on_this_path = @current_path.cars
+    if cars_on_this_path.last == self
+      return inf unless @next_path
+      cars_on_next_path = @next_path.cars
+      return inf unless cars_on_next_path
+      return (cars_on_next_path.first.distance + (@current_path.length - @distance))
+    else
+      index_of_this_car = cars_on_this_path.index(self)
+      return (cars_on_this_path[index_of_this_car+1].distance - @distance)
+    end
+  end
+
+  def next_car_number
+    if @current_path == nil
+      return -1
+    end
+
+    cars_on_this_path = @current_path.cars
+    if cars_on_this_path.last == self
+      return -1 unless @next_path
+      cars_on_next_path = @next_path.cars
+      return -1 unless cars_on_next_path
+      return cars_on_next_path.first.number
+    else
+      index_of_this_car = cars_on_this_path.index(self)
+      return cars_on_this_path[index_of_this_car+1].number
+    end
   end
 
   def tile

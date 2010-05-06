@@ -65,7 +65,7 @@ class Vector
       canvas.g.translate(*car.pos).rotate(car.angle) do |c|
         c.styles(:fill => 'black', :stroke => "black", :stroke_width => 0.1)
         c.circle(0.5,0,0)
-        c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.25).text(0,0, "Speed: %.1f m/s" % [car.speed])
+        c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.25).text(0,0, "%d (%.1f m/s, %d %.1f m)" % [car.number, car.speed, car.next_car_number, car.distance_to_next_car])
 #c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.2).text(0,0, "(%d,%d)\n(%d,%d)\n%s\n(%d,%d)\n(%d,%d)" % (car.grid_pos + car.next_grid_pos + [car.tile.class] + car.current_path.end_point + car.current_path.end_direction))
       end
       canvas.g.translate(*car.tail).rotate(car.angle) do |c|
