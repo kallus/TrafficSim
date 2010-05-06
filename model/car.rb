@@ -12,6 +12,12 @@ class Car
     @grid_pos = grid_pos
     @tile_grid = tile_grid
     @grid_size = [@tile_grid[0].length,@tile_grid.length]
+
+    @speed = 0
+    @acceleration = 0
+    @jerk = 0.2
+    @max_speed = 10
+    @max_acceleration = 2
   end
 
   def pos
@@ -20,7 +26,7 @@ class Car
   end
 
   def speed #(m/s)
-    10
+    @speed
   end
 
   def step!(time) #seconds
@@ -34,6 +40,19 @@ class Car
       @prev_path = @current_path
       @current_path = temporary_path
       @dead = true unless @current_path
+    end
+
+    if @acceleration < @max_acceleration
+      @acceleration += @jerk * time
+    else
+      @acceleration = @max_acceleration
+    end
+
+    if @speed < @max_speed
+      @speed += @acceleration * time
+    else
+      @speed = @max_speed
+      @acceleration = 0
     end
   end
 
