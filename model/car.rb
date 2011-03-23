@@ -115,12 +115,13 @@ class Car
       return inf 
     end
 
-    cars_on_this_path = @current_path.cars
-    if cars_on_this_path.last == self
-      return inf unless @next_path
-      cars_on_next_path = @next_path.cars
+    cars_on_this_path = current_path.cars
+    if cars_on_this_path.last == self # no cars in front, on this tile
+      return inf unless next_path
+      cars_on_next_path = next_path.cars
       return inf unless cars_on_next_path
-      return (cars_on_next_path.first.distance + (@current_path.length - @distance))
+      return inf unless cars_on_next_path.first
+      return (cars_on_next_path.first.distance + (current_path.length - @distance))
     else
       index_of_this_car = cars_on_this_path.index(self)
       return (cars_on_this_path[index_of_this_car+1].distance - @distance)
@@ -132,11 +133,12 @@ class Car
       return -1
     end
 
-    cars_on_this_path = @current_path.cars
+    cars_on_this_path = current_path.cars
     if cars_on_this_path.last == self
-      return -1 unless @next_path
-      cars_on_next_path = @next_path.cars
+      return -1 unless next_path
+      cars_on_next_path = next_path.cars
       return -1 unless cars_on_next_path
+      return -1 unless cars_on_next_path.first
       return cars_on_next_path.first.number
     else
       index_of_this_car = cars_on_this_path.index(self)

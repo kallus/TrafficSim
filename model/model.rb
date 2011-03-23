@@ -1,12 +1,15 @@
 class Model
 	attr :cars
-	attr :tile_grid
+	attr_accessor :tile_grid
   attr_reader :time
 
   def initialize
     @time = 0
 		@cars = []
 		@tile_grid = []
+  end
+
+  def init_small_town
     @tile_grid << [TurnSeTile.new, TcrossNTile.new, TurnSwTile.new]
     @tile_grid << [TurnNeTile.new, TcrossSTile.new, TurnNwTile.new]
     @tile_grid.reverse!
