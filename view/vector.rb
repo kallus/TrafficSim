@@ -52,11 +52,9 @@ class Vector
             path!(solid, tile.paths([Tile.width,35]).first)
             path!(solid, tile.paths([35,0]).first)
           when TcrossNTile
-            solid.styles(:stroke=>'red', :stroke_width=>0.2) if tile.is_locked?
             paths = tile.paths([0,25]) + tile.paths([35,0]) + tile.paths([Tile.width,35])
             paths.each { |p| path!(solid,p)}
           when TcrossSTile
-            solid.styles(:stroke=>'red', :stroke_width=>0.2) if tile.is_locked?
             paths = tile.paths([0,25]) + tile.paths([25,Tile.height]) + tile.paths([Tile.width,35])
             paths.each { |p| path!(solid,p)}
         end
@@ -78,6 +76,7 @@ class Vector
     end
 
     def path!(canvas, path)
+      solid.styles(:stroke=>'red', :stroke_width=>0.2) if path.is_locked?
       (1..path.length).to_a.each do |i|
         canvas.line(*(path.point(i-1) + path.point(i)))
       end
