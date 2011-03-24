@@ -6,6 +6,7 @@ class Car
   attr :speed
   attr_reader :distance
   attr_reader :number
+  attr_accessor :target_speed
   @@serial_number = 1
 
   def initialize(path, distance, grid_pos, tile_grid)
@@ -79,14 +80,6 @@ class Car
       @acceleration = 1
     end
 
-    if @speed < @max_speed
-      @speed += @acceleration * time
-    elsif @speed < 0
-      @speed = 0
-    else
-      @speed = [@max_speed, @speed + @acceleration * time].min
-      @acceleration = 0
-    end
   end
 
   def tail
