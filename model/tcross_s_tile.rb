@@ -21,8 +21,10 @@ class TcrossSTile < Crossing
       else [20+s-r/2*Math::PI, 25]
       end
     end
-    @paths << LockablePath.new(entrance_east, 40+2.5*Math::PI, [35,Tile.height])
-    @paths << LockablePath.new(entrance_north, 40+7.5*Math::PI, [Tile.width,25])
+    en = LockablePath.new(entrance_east, 40+2.5*Math::PI, [35,Tile.height])
+    ne = LockablePath.new(entrance_north, 40+7.5*Math::PI, [Tile.width,25])
+    @paths << en
+    @paths << ne
     
     #copy of NW tile
     entrance_west = lambda do |s|
@@ -43,13 +45,23 @@ class TcrossSTile < Crossing
       else [40+r/2*Math::PI-s, 35]
       end
     end
-    @paths << LockablePath.new(entrance_west, 40+7.5*Math::PI, [35,Tile.width])
-    @paths << LockablePath.new(entrance_north, 40+2.5*Math::PI, [0,35])
+    wn = LockablePath.new(entrance_west, 40+7.5*Math::PI, [35,Tile.width])
+    nw = LockablePath.new(entrance_north, 40+2.5*Math::PI, [0,35])
+    @paths << wn
+    @paths << nw
     
     #copy of horizontal
-    @paths << LockablePath.new(lambda {|s| [s, 25]}, Tile.width, [Tile.width,25]) #entrance from west
-    @paths << LockablePath.new(lambda {|s| [Tile.width-s, 35]}, Tile.width, [0,35]) #entrance from east
+    we = LockablePath.new(lambda {|s| [s, 25]}, Tile.width, [Tile.width,25]) #entrance from west
+    ew = LockablePath.new(lambda {|s| [Tile.width-s, 35]}, Tile.width, [0,35]) #entrance from east
+    @paths << we
+    @paths << ew
     
+    en.crossing_paths = [en, wn]
+    ne.crossing_paths = [ne, wn, we, ew]
+    wn.crossing_paths = [wn, en, we, ew]
+    nw.crossing_paths = [nw, ew]
+    we.crossing_paths = [we, ne]
+    ew.crossing_paths = [ew, ne, wn, en]
     
     @start_positions = []
     @paths.each do |p|
