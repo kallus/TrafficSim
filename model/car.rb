@@ -63,7 +63,7 @@ class Car
 
     if distance_to_next_car > -1 and distance_to_next_car < 20
       @acceleration = -1
-    elsif
+    else
       @acceleration = 1
     end
 
