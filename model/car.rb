@@ -3,6 +3,7 @@ class Car
   attr :current_path
   attr :grid_pos
   attr :dead
+  attr :speed
   attr_reader :distance
   attr_reader :number
   @@serial_number = 1
@@ -21,35 +22,46 @@ class Car
 
     @speed = 0
     @acceleration = 0
-    @jerk = 0.2
-    @max_speed = 10
-    @max_acceleration = 2
+    @jerk = 0
+
+    @target_jerk = 0.2
+    @target_speed = 8 + 4 * rand
+    @max_acceleration = 1
+    @target_distance = 20
 
     path.add_car!(self)
   end
 
   def pos
-    pos = @current_path.point(@distance)
+    pos = current_path.point(@distance)
     local_to_global(pos)
   end
 
-  def speed #(m/s)
-    @speed
+  def update_acceleration!
+    if distance_to_next_car > -1 and distance_to_next_car < @target_distance
+      @acceleration = -@max_acceleration
+    elsif speed < @target_speed
+      @acceleration = @max_acceleration
+    else
+      @acceleration = 0
+    end
   end
 
   def step!(time) #seconds
+    update_acceleration!
+    @speed += @acceleration * time
     @distance += speed * time
     
     if @distance > current_path.length then
-      @current_path.delete_car!(self)
+      current_path.delete_car!(self)
       @distance -= current_path.length
       temporary_path = next_path
-      @prev_grid_pos = @grid_pos
+      @prev_grid_pos = grid_pos
       @grid_pos = next_grid_pos
-      @prev_path = @current_path
+      @prev_path = current_path
       @current_path = temporary_path
-      if @current_path
-        @current_path.add_car!(self)
+      if current_path
+        current_path.add_car!(self)
       else
         @dead = true
       end
@@ -82,7 +94,7 @@ class Car
     if t_dist < 0 #dont let this happen when prev_path is not set
       local_to_global(@prev_path.point(@prev_path.length+t_dist),@prev_grid_pos)
     else
-      local_to_global(@current_path.point(t_dist))
+      local_to_global(current_path.point(t_dist))
     end
   end
 
@@ -119,7 +131,7 @@ class Car
 
   def distance_to_next_car
     inf = -1  # should come up with something better
-    if @current_path == nil
+    if current_path == nil
       return inf 
     end
 
@@ -137,7 +149,7 @@ class Car
   end
 
   def next_car_number
-    if @current_path == nil
+    if current_path == nil
       return -1
     end
 

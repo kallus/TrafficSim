@@ -1,7 +1,7 @@
 require "trafficsim"
 require "view/vector"
 
-settings = {:step => 0.3, :end => 60}
+settings = {:step => 0.6, :end => 60}
 
 model = Model.new
 #model.init_small_town
