@@ -68,27 +68,6 @@ class Car
         @dead = true
       end
     end
-
-    if @acceleration < @max_acceleration
-      @acceleration += @jerk * time
-    else
-      @acceleration = @max_acceleration
-    end
-
-    if distance_to_next_car > -1 and distance_to_next_car < 20
-      @acceleration = -1
-    else
-      @acceleration = 1
-    end
-
-    if @speed < @max_speed
-      @speed += @acceleration * time
-    elsif @speed < 0
-      @speed = 0
-    else
-      @speed = [@max_speed, @speed + @acceleration * time].min
-      @acceleration = 0
-    end
   end
 
   def tail
