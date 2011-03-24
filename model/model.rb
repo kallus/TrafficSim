@@ -1,12 +1,26 @@
 class Model
-	attr :cars
-	attr_accessor :tile_grid
+  attr :cars
+  attr_accessor :tile_grid
   attr_reader :time
 
   def initialize
     @time = 0
-		@cars = []
-		@tile_grid = []
+    @cars = []
+    @tile_grid = []
+  end
+
+  def init_boring_town
+    tile_grid << [TurnSeTile.new, TcrossNTile.new, TurnSwTile.new]
+    tile_grid << [TurnNeTile.new, TcrossSTile.new, TurnNwTile.new]
+    tile_grid.reverse!
+    start = tile_grid[0][0].start_pos
+    car1 = Car.new(start[:path], start[:distance], [0, 0], tile_grid)
+    car1.target_speed = 20
+    @cars << car1
+    start = tile_grid[0][1].start_pos
+    car2 = Car.new(start[:path], start[:distance], [1, 0], tile_grid)
+    car2.target_speed = 6
+    @cars << car2
   end
 
   def init_small_town
@@ -25,11 +39,11 @@ class Model
     end
   end
 
-	def step!(step_length) #seconds
-		cars.each do |c|
-			c.step!(step_length)
-		end
+  def step!(step_length) #seconds
+    cars.each do |c|
+      c.step!(step_length)
+    end
     cars.delete_if{|c| c.dead}
     @time += step_length
-	end
+  end
 end
