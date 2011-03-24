@@ -43,6 +43,8 @@ class Car
       @acceleration = -@max_acceleration
     elsif speed < @target_speed
       @acceleration = @max_acceleration
+    elsif speed > @target_speed
+      @acceleration = -@max_acceleration
     else
       @acceleration = 0
     end
