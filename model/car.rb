@@ -43,7 +43,8 @@ class Car
   def update_acceleration!
     dtno = distance_to_next_obstruction
     if dtno > -1 and dtno < @target_distance
-      @acceleration = -@max_acceleration
+      diff = @target_distance - dtno
+      @acceleration = (diff/@target_distance*4) ** 2 * -@max_acceleration - @max_acceleration
     elsif speed < @target_speed
       @acceleration = @max_acceleration
     elsif speed > @target_speed
@@ -56,9 +57,7 @@ class Car
   def step!(time) #seconds
     update_acceleration!
     @speed += @acceleration * time
-    if distance_to_next_obstruction <= 5
-      @speed = 0
-    end
+    @speed = 0 if speed < 0
     @distance += speed * time
     if @distance > current_path.length then
       current_path.delete_car!(self)

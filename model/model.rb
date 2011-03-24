@@ -34,6 +34,9 @@ class Model
           start = tile.start_pos
 #break unless start
           @cars << Car.new(start[:path], start[:distance], [x,y], tile_grid)
+          if tile_grid[y][x].kind_of?(Crossing)
+            tile_grid[y][x].try_lock(@cars.last)
+          end
           break
         end
       end

@@ -7,8 +7,8 @@ srand(33)
 puts rand.to_s
 
 model = Model.new
-#model.init_small_town
-model.init_boring_town
+model.init_small_town
+#model.init_boring_town
 
 until model.time > settings[:end] do
   print "\r%d%%" % [model.time*100.0/settings[:end]]
