@@ -1,8 +1,8 @@
 #done and tested
 class TcrossSTile < Crossing
   def initialize
-		@paths = []
-#copy of NE tile
+    @paths = []
+    #copy of NE tile
     entrance_east = lambda do |s|
       s = s.to_f
       r = 5.0
@@ -21,10 +21,10 @@ class TcrossSTile < Crossing
       else [20+s-r/2*Math::PI, 25]
       end
     end
-		@paths << LockablePath.new(entrance_east, 40+2.5*Math::PI, [35,Tile.height])
-		@paths << LockablePath.new(entrance_north, 40+7.5*Math::PI, [Tile.width,25])
-
-#copy of NW tile
+    @paths << LockablePath.new(entrance_east, 40+2.5*Math::PI, [35,Tile.height])
+    @paths << LockablePath.new(entrance_north, 40+7.5*Math::PI, [Tile.width,25])
+    
+    #copy of NW tile
     entrance_west = lambda do |s|
       s = s.to_f
       r = 15.0
@@ -43,21 +43,21 @@ class TcrossSTile < Crossing
       else [40+r/2*Math::PI-s, 35]
       end
     end
-		@paths << LockablePath.new(entrance_west, 40+7.5*Math::PI, [35,Tile.width])
-		@paths << LockablePath.new(entrance_north, 40+2.5*Math::PI, [0,35])
-
-#copy of horizontal
-		@paths << LockablePath.new(lambda {|s| [s, 25]}, Tile.width, [Tile.width,25]) #entrance from west
-		@paths << LockablePath.new(lambda {|s| [Tile.width-s, 35]}, Tile.width, [0,35]) #entrance from east
-
-
-		@start_positions = []
-		@paths.each do |p|
-			distance = 1 + Car.length
-			while distance <= p.length
-				@start_positions << {:distance => distance, :path => p}
-				distance += Car.length + 2
-			end
-		end
+    @paths << LockablePath.new(entrance_west, 40+7.5*Math::PI, [35,Tile.width])
+    @paths << LockablePath.new(entrance_north, 40+2.5*Math::PI, [0,35])
+    
+    #copy of horizontal
+    @paths << LockablePath.new(lambda {|s| [s, 25]}, Tile.width, [Tile.width,25]) #entrance from west
+    @paths << LockablePath.new(lambda {|s| [Tile.width-s, 35]}, Tile.width, [0,35]) #entrance from east
+    
+    
+    @start_positions = []
+    @paths.each do |p|
+      distance = 1 + Car.length
+      while distance <= p.length
+        @start_positions << {:distance => distance, :path => p}
+        distance += Car.length + 2
+      end
+    end
   end
 end
