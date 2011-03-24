@@ -2,8 +2,8 @@
 class TcrossNTile < Crossing
   def initialize
     @paths = []
-
-#copy of SW turn
+    
+    #copy of SW turn
     entrance_west = lambda do |s|
       s = s.to_f
       r = 5.0
@@ -27,7 +27,7 @@ class TcrossNTile < Crossing
     @paths << ws
     @paths << sw
 
-#copy of SE turn
+    #copy of SE turn
     entrance_east = lambda do |s|
       s = s.to_f
       r = 15.0
