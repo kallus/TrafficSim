@@ -15,11 +15,12 @@ class Model
     tile_grid.reverse!
     start = tile_grid[0][0].start_pos
     car1 = Car.new(start[:path], start[:distance], [0, 0], tile_grid)
-    car1.target_speed = 20
+    car1.target_speed = 16
     @cars << car1
     start = tile_grid[0][1].start_pos
     car2 = Car.new(start[:path], start[:distance], [1, 0], tile_grid)
     car2.target_speed = 6
+    tile_grid[0][1].try_lock(car2)
     @cars << car2
   end
 

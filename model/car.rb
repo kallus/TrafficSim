@@ -30,6 +30,8 @@ class Car
     @max_acceleration = 1
     @target_distance = 20
 
+    @waiting_for_path = nil
+
     path.add_car!(self)
   end
 
@@ -39,7 +41,8 @@ class Car
   end
 
   def update_acceleration!
-    if distance_to_next_car > -1 and distance_to_next_car < @target_distance
+    dtno = distance_to_next_obstruction
+    if dtno > -1 and dtno < @target_distance
       @acceleration = -@max_acceleration
     elsif speed < @target_speed
       @acceleration = @max_acceleration
@@ -53,12 +56,28 @@ class Car
   def step!(time) #seconds
     update_acceleration!
     @speed += @acceleration * time
+    if distance_to_next_obstruction <= 5
+      @speed = 0
+    end
     @distance += speed * time
-    
     if @distance > current_path.length then
       current_path.delete_car!(self)
+      if current_tile.kind_of?(Crossing)
+        current_tile.release(self)
+      end
       @distance -= current_path.length
       temporary_path = next_path
+      if next_tile.kind_of?(Crossing)
+        puts "found a crossing"
+        unless next_tile.try_lock(self)
+          @speed = 0
+          @acceleration = 0
+          @waiting_for_path = next_path
+        else
+          @waiting_for_path = nil
+        end
+      end
+
       @prev_grid_pos = grid_pos
       @grid_pos = next_grid_pos
       @prev_path = current_path
@@ -90,12 +109,25 @@ class Car
     end
   end
 
+  def next_tile
+    ngs = next_grid_pos
+    return @tile_grid[ngs[1]][ngs[0]]
+  end
+
+  def current_tile
+    return @tile_grid[grid_pos[1]][grid_pos[0]]
+  end
+
   def next_grid_pos
     [grid_pos[0] + current_path.end_direction[0],
      grid_pos[1] + current_path.end_direction[1]]
   end
 
   def next_path
+    if @waiting_for_path != nil
+      return @waiting_for_path
+    end
+
     n = next_grid_pos
     if n[0] >= @grid_size[0] || n[1] >= @grid_size[1] || n[0] < 0 || n[1] < 0 then
       puts "next grid position out of bounds"
@@ -111,8 +143,8 @@ class Car
     return paths[rand(paths.length)]
   end
 
-  def distance_to_next_car
-    inf = -1  # should come up with something better
+  def distance_to_next_obstruction
+    inf = 100000  # should come up with something better
     if current_path == nil
       return inf 
     end
@@ -120,6 +152,12 @@ class Car
     cars_on_this_path = current_path.cars
     if cars_on_this_path.last == self # no cars in front, on this tile
       return inf unless next_path
+      if next_tile.kind_of?(Crossing)
+        if next_tile.has_lock(self) == false and next_tile.is_locked?
+          return (current_path.length - @distance)
+        end
+      end
+
       cars_on_next_path = next_path.cars
       return inf unless cars_on_next_path
       return inf unless cars_on_next_path.first

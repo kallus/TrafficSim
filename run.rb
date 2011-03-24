@@ -3,7 +3,7 @@ require "view/vector"
 
 settings = {:step => 0.6, :end => 60}
 
-srand(20)
+srand(33)
 puts rand.to_s
 
 model = Model.new

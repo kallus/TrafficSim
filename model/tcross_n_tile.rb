@@ -1,5 +1,5 @@
 #done and tested
-class TcrossNTile < Tile
+class TcrossNTile < Crossing
   def initialize
     @paths = []
 

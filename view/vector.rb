@@ -31,7 +31,7 @@ class Vector
 
       @rvg.draw.write("output/#{("%06.2f" % [time]).sub(".", "")}.gif")
     end
-
+ 
     def tile!(canvas, tile, x, y)
       canvas.g.translate(x, y) do |solid|
         solid.styles(:stroke=>'black', :stroke_width=>0.2)
@@ -52,9 +52,11 @@ class Vector
             path!(solid, tile.paths([Tile.width,35]).first)
             path!(solid, tile.paths([35,0]).first)
           when TcrossNTile
+            solid.styles(:stroke=>'red', :stroke_width=>0.2) if tile.is_locked?
             paths = tile.paths([0,25]) + tile.paths([35,0]) + tile.paths([Tile.width,35])
             paths.each { |p| path!(solid,p)}
           when TcrossSTile
+            solid.styles(:stroke=>'red', :stroke_width=>0.2) if tile.is_locked?
             paths = tile.paths([0,25]) + tile.paths([25,Tile.height]) + tile.paths([Tile.width,35])
             paths.each { |p| path!(solid,p)}
         end
@@ -65,7 +67,7 @@ class Vector
       canvas.g.translate(*car.pos).rotate(car.angle) do |c|
         c.styles(:fill => 'black', :stroke => "black", :stroke_width => 0.1)
         c.circle(0.5,0,0)
-        c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.25).text(0,0, "%d (%.1f m/s, %d %.1f m)" % [car.number, car.speed, car.next_car_number, car.distance_to_next_car])
+        c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.25).text(0,0, "%d (%.1f m/s, %d %.1f m)" % [car.number, car.speed, car.next_car_number, car.distance_to_next_obstruction])
 #c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.2).text(0,0, "(%d,%d)\n(%d,%d)\n%s\n(%d,%d)\n(%d,%d)" % (car.grid_pos + car.next_grid_pos + [car.tile.class] + car.current_path.end_point + car.current_path.end_direction))
       end
       canvas.g.translate(*car.tail).rotate(car.angle) do |c|

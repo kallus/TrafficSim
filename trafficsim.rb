@@ -1,5 +1,6 @@
 require "model/model"
 require "model/tile"
+require "model/crossing"
 require "model/horizontal_tile"
 require "model/turn_sw_tile"
 require "model/turn_ne_tile"
