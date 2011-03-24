@@ -1,7 +1,7 @@
 #done and tested
 class TcrossNTile < Tile
   def initialize
-		@paths = []
+    @paths = []
 
 #copy of SW turn
     entrance_west = lambda do |s|
@@ -22,8 +22,8 @@ class TcrossNTile < Tile
       else [40+r/2*Math::PI-s, 35]
       end
     end
-		@paths << Path.new(entrance_west, 40+2.5*Math::PI, [25,0])
-		@paths << Path.new(entrance_south, 40+7.5*Math::PI, [0,35])
+    @paths << Path.new(entrance_west, 40+2.5*Math::PI, [25,0])
+    @paths << Path.new(entrance_south, 40+7.5*Math::PI, [0,35])
 
 #copy of SE turn
     entrance_east = lambda do |s|
@@ -44,21 +44,21 @@ class TcrossNTile < Tile
       else [s+20-r/2*Math::PI, 25]
       end
     end
-		@paths << Path.new(entrance_east, 40+7.5*Math::PI, [25,0])
-		@paths << Path.new(entrance_south, 40+2.5*Math::PI, [Tile.width,25])
+    @paths << Path.new(entrance_east, 40+7.5*Math::PI, [25,0])
+    @paths << Path.new(entrance_south, 40+2.5*Math::PI, [Tile.width,25])
 
 #copy of horizontal
-		@paths << Path.new(lambda {|s| [s, 25]}, Tile.width, [Tile.width,25]) #entrance from west
-		@paths << Path.new(lambda {|s| [Tile.width-s, 35]}, Tile.width, [0,35]) #entrance from east
+    @paths << Path.new(lambda {|s| [s, 25]}, Tile.width, [Tile.width,25]) #entrance from west
+    @paths << Path.new(lambda {|s| [Tile.width-s, 35]}, Tile.width, [0,35]) #entrance from east
 
-
-		@start_positions = []
-		@paths.each do |p|
-			distance = 1 + Car.length
-			while distance <= p.length
-				@start_positions << {:distance => distance, :path => p}
-				distance += Car.length + 2
-			end
-		end
+    
+    @start_positions = []
+    @paths.each do |p|
+      distance = 1 + Car.length
+      while distance <= p.length
+        @start_positions << {:distance => distance, :path => p}
+        distance += Car.length + 2
+      end
+    end
   end
 end
