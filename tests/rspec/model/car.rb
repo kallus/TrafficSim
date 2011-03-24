@@ -13,5 +13,6 @@ describe Car, ".next_car_number" do
     model.cars[0].next_car_number.should == 2
     model.cars[1].next_car_number.should == -1
     model.cars[0].distance_to_next_car.should == 20
+    model.cars[1].distance_to_next_car.should == -1
 	end
 end
