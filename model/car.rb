@@ -61,21 +61,10 @@ class Car
     @distance += speed * time
     if @distance > current_path.length then
       current_path.delete_car!(self)
-      if current_tile.kind_of?(Crossing)
-        current_tile.release(self)
-      end
+      unlock_paths! current_path
       @distance -= current_path.length
       temporary_path = next_path
-      if next_tile.kind_of?(Crossing)
-        puts "found a crossing"
-        unless next_tile.try_lock(self)
-          @speed = 0
-          @acceleration = 0
-          @waiting_for_path = next_path
-        else
-          @waiting_for_path = nil
-        end
-      end
+      try_lock_paths! next_path
 
       @prev_grid_pos = grid_pos
       @grid_pos = next_grid_pos
@@ -85,6 +74,38 @@ class Car
         current_path.add_car!(self)
       else
         @dead = true
+      end
+    end
+  end
+
+  def unlock_paths!(old_path)
+    if old_path.kind_of? LockablePath
+      old_path.crossing_paths.each do |path|
+        path.release(self)
+      end
+    end
+  end
+
+  def try_lock_paths!(next_path)
+    if path.kind_of? LockablePath
+      puts "found a crossing"
+
+      all_available = true
+      next_path.crossing_paths.each do |path|
+        if path.is_locked?
+          all_available = false
+        end
+      end
+
+      if all_available
+        next_path.crossing_paths.each do |path|
+          path.try_lock(self)
+        end
+        @waiting_for_path = nil
+      else
+        @speed = 0
+        @acceleration = 0
+        @waiting_for_path = next_path
       end
     end
   end
@@ -151,8 +172,8 @@ class Car
     cars_on_this_path = current_path.cars
     if cars_on_this_path.last == self # no cars in front, on this tile
       return inf unless next_path
-      if next_tile.kind_of?(Crossing)
-        if next_tile.has_lock(self) == false and next_tile.is_locked?
+      if next_path.kind_of?(LockablePath)
+        if next_path.has_lock(self) == false and next_path.is_locked?
           return (current_path.length - @distance)
         end
       end
