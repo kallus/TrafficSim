@@ -6,6 +6,7 @@ class Car
   attr :speed
   attr_reader :distance
   attr_reader :number
+  attr_accessor :target_speed
   @@serial_number = 1
 
   def initialize(path, distance, grid_pos, tile_grid)

@@ -3,6 +3,9 @@ require "view/vector"
 
 settings = {:step => 0.6, :end => 60}
 
+srand(20)
+puts rand.to_s
+
 model = Model.new
 #model.init_small_town
 model.init_boring_town

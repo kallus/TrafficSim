@@ -1,10 +1,10 @@
 class Tile
-	def paths(entrance_point)
-		@paths.select{|p| p.point(0) == entrance_point}
-	end
+  def paths(entrance_point)
+    @paths.select{|p| p.point(0) == entrance_point}
+  end
 
   def start_pos
-		@start_positions.shift
+    @start_positions.shift
   end
 
   class << self
