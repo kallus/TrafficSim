@@ -34,7 +34,7 @@ class Vector
  
     def tile!(canvas, tile, x, y)
       canvas.g.translate(x, y) do |solid|
-        solid.styles(:stroke=>'black', :stroke_width=>0.2)
+        #solid.styles(:stroke=>'black', :stroke_width=>0.2)
         case tile
           when HorizontalTile
             solid.line(0, 35, Tile.width, 35)
@@ -75,12 +75,24 @@ class Vector
       canvas.line(*(car.pos+car.tail))
     end
 
-    def path!(canvas, path)
-      solid.styles(:stroke=>'red', :stroke_width=>0.2) if path.is_locked?
-      (1..path.length).to_a.each do |i|
-        canvas.line(*(path.point(i-1) + path.point(i)))
+    def path!(solid, path)
+      if path.kind_of?(LockablePath) and path.is_locked?
+        solid.g.translate(0, 0) do |s|
+          s.styles(:stroke=>'red', :stroke_width=>0.8) 
+          (1..path.length).to_a.each do |i|
+            s.line(*(path.point(i-1) + path.point(i)))
+          end
+          s.line(*(path.point(path.length-1) + path.end_point))
+        end
+      else
+        solid.g.translate(0, 0) do |s|
+          s.styles(:stroke=>'black', :stroke_width=>0.2) 
+          (1..path.length).to_a.each do |i|
+            s.line(*(path.point(i-1) + path.point(i)))
+          end
+          s.line(*(path.point(path.length-1) + path.end_point))
+        end
       end
-      canvas.line(*(path.point(path.length-1) + path.end_point))
     end
   end
 end

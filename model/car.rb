@@ -16,6 +16,7 @@ class Car
     @dead = false
     @angle = 0
     @current_path = path
+    @next_path = nil
     @distance = distance
     @grid_pos = grid_pos
     @tile_grid = tile_grid
@@ -23,15 +24,12 @@ class Car
 
     @speed = 0
     @acceleration = 0
-    @jerk = 0
 
-    @target_jerk = 0.2
     @target_speed = 8 + 4 * rand
     @max_acceleration = 1
-    @target_distance = 20
+    @target_distance = 30
 
-    @waiting_for_path = nil
-
+    try_lock_paths! path
     path.add_car!(self)
   end
 
@@ -42,7 +40,7 @@ class Car
 
   def update_acceleration!
     dtno = distance_to_next_obstruction
-    if dtno > -1 and dtno < @target_distance
+    if dtno < @target_distance
       diff = @target_distance - dtno
       @acceleration = (diff/@target_distance*4) ** 2 * -@max_acceleration - @max_acceleration
     elsif speed < @target_speed
@@ -57,57 +55,70 @@ class Car
   def step!(time) #seconds
     update_acceleration!
     @speed += @acceleration * time
-    @speed = 0 if speed < 0
+    if speed < 0
+      #puts "#{@number} stopped from going backwards"
+      @speed = 0
+    end
     @distance += speed * time
-    if @distance > current_path.length then
-      current_path.delete_car!(self)
-      unlock_paths! current_path
-      @distance -= current_path.length
-      temporary_path = next_path
-      try_lock_paths! next_path
 
-      @prev_grid_pos = grid_pos
-      @grid_pos = next_grid_pos
-      @prev_path = current_path
-      @current_path = temporary_path
-      if current_path
-        current_path.add_car!(self)
+    if @distance > current_path.length then
+      if not next_path.kind_of?(LockablePath) or try_lock_paths! next_path
+        puts "removing #{@number} from #{current_path}"
+        current_path.delete_car!(self)
+        unlock_paths!
+        @distance -= current_path.length
+        @prev_grid_pos = grid_pos
+        @grid_pos = next_grid_pos
+        @prev_path = current_path
+        @current_path = next_path
+        @next_path = nil
+        if current_path
+          puts "Adding #{@number} to #{current_path}"
+          current_path.add_car!(self)
+        else
+          puts "#{@number} dead"
+          @dead = true
+        end
       else
-        @dead = true
+        puts "#{@number} stepped back"
+        #@distance -= speed * time
+        @distance = current_path.length - Car.length
       end
     end
   end
 
-  def unlock_paths!(old_path)
-    if old_path.kind_of? LockablePath
-      old_path.crossing_paths.each do |path|
+  def unlock_paths!
+    if current_path.kind_of? LockablePath
+      current_path.crossing_paths.each do |path|
         path.release(self)
       end
     end
   end
 
-  def try_lock_paths!(next_path)
-    if path.kind_of? LockablePath
-      puts "found a crossing"
-
+  def try_lock_paths!(n_path)
+    if n_path.kind_of? LockablePath
       all_available = true
-      next_path.crossing_paths.each do |path|
-        if path.is_locked?
+      n_path.crossing_paths.each do |path|
+        puts "#{@number} looking at #{path}"
+        if path.is_locked? and not path.has_lock?(self)
           all_available = false
         end
       end
 
       if all_available
-        next_path.crossing_paths.each do |path|
+        n_path.crossing_paths.each do |path|
           path.try_lock(self)
         end
         @waiting_for_path = nil
       else
+        puts "#{@number} emergency brake"
         @speed = 0
         @acceleration = 0
-        @waiting_for_path = next_path
+        @waiting_for_path = n_path
+        return false
       end
     end
+    return true
   end
 
   def tail
@@ -144,13 +155,15 @@ class Car
   end
 
   def next_path
-    if @waiting_for_path != nil
-      return @waiting_for_path
+    if @next_path != nil
+      return @next_path
     end
 
     n = next_grid_pos
     if n[0] >= @grid_size[0] || n[1] >= @grid_size[1] || n[0] < 0 || n[1] < 0 then
       puts "next grid position out of bounds"
+      puts grid_pos
+      puts next_grid_pos
       return false
     end
 
@@ -160,20 +173,18 @@ class Car
       return false
     end
 
-    return paths[rand(paths.length)]
+    @next_path = paths[rand(paths.length)]
+    return @next_path
   end
 
   def distance_to_next_obstruction
-    inf = 100000  # should come up with something better
-    if current_path == nil
-      return inf 
-    end
+    inf = 1000  # should come up with something better
 
     cars_on_this_path = current_path.cars
     if cars_on_this_path.last == self # no cars in front, on this tile
       return inf unless next_path
       if next_path.kind_of?(LockablePath)
-        if next_path.has_lock(self) == false and next_path.is_locked?
+        if next_path.is_locked? and not next_path.has_lock?(self)
           return (current_path.length - @distance)
         end
       end
@@ -189,10 +200,6 @@ class Car
   end
 
   def next_car_number
-    if current_path == nil
-      return -1
-    end
-
     cars_on_this_path = current_path.cars
     if cars_on_this_path.last == self
       return -1 unless next_path
@@ -202,6 +209,9 @@ class Car
       return cars_on_next_path.first.number
     else
       index_of_this_car = cars_on_this_path.index(self)
+      if index_of_this_car == nil
+        raise "#{@number} not found on #{@current_path}"
+      end
       return cars_on_this_path[index_of_this_car+1].number
     end
   end

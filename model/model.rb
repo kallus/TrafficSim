@@ -20,7 +20,7 @@ class Model
     start = tile_grid[0][1].start_pos
     car2 = Car.new(start[:path], start[:distance], [1, 0], tile_grid)
     car2.target_speed = 6
-    tile_grid[0][1].try_lock(car2)
+    car2.try_lock_paths! car2.current_path
     @cars << car2
   end
 
@@ -28,17 +28,11 @@ class Model
     @tile_grid << [TurnSeTile.new, TcrossNTile.new, TurnSwTile.new]
     @tile_grid << [TurnNeTile.new, TcrossSTile.new, TurnNwTile.new]
     @tile_grid.reverse!
+    # add one car to each tile
     @tile_grid.each_with_index do |tiles, y|
       tiles.each_with_index do |tile, x|
-        while true do
-          start = tile.start_pos
-#break unless start
-          @cars << Car.new(start[:path], start[:distance], [x,y], tile_grid)
-          if tile_grid[y][x].kind_of?(Crossing)
-            tile_grid[y][x].try_lock(@cars.last)
-          end
-          break
-        end
+        start = tile.start_pos
+        @cars << Car.new(start[:path], start[:distance], [x,y], tile_grid)
       end
     end
   end

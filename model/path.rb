@@ -10,6 +10,9 @@ class Path
   end
   
   def point(distance)
+    if distance > length
+      raise "distance too large"
+    end
     @parameterization.call(distance) unless distance > length
   end
   
@@ -29,6 +32,9 @@ class Path
   end
 
   def add_car!(car)
+    if self.kind_of?(LockablePath) and not self.has_lock?(car)
+      raise "#{car.number} in unlocked path #{self}"
+    end
     @cars << car
   end
 

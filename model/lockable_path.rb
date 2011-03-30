@@ -1,25 +1,25 @@
 class LockablePath < Path
-  attr :crossing_paths
+  attr_accessor :crossing_paths
 
-  def initialize(parameterization, length, end_point, crossing_paths)
+  def initialize(parameterization, length, end_point)
     super(parameterization, length, end_point)
-    @crossing_paths = crossing_paths
     @locked = false
     @owner = nil
   end
 
   def try_lock(new_owner)
     if @locked
+      puts "#{new_owner.number} could not lock #{self}, owned by #{@owner.number}"
       return false
     else
-      puts "locked"
       @owner = new_owner
       @locked = true
+      puts "#{new_owner.number} locked #{self}"
       return true
     end
   end
 
-  def has_lock(car)
+  def has_lock?(car)
     return @owner == car
   end
 
@@ -29,11 +29,15 @@ class LockablePath < Path
 
   def release(car)
     if @owner != car
-      raise "#{car.number} tried to release lock not owned by this car"
+      if @owner == nil
+        raise "#{car.number} could not release #{self}, owned by noone"
+      else
+        raise "#{car.number} could not release #{self}, owned by #{@owner.number}"
+      end
     else
       @owner = nil
       @locked = false
-      puts "released"
+      puts "#{car.number} released #{self}"
     end
   end
 end
