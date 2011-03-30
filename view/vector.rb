@@ -39,6 +39,9 @@ class Vector
           when HorizontalTile
             solid.line(0, 35, Tile.width, 35)
             solid.line(0, 25, Tile.width, 25)
+          when VerticalTile
+            solid.line(25, 0, 25, Tile.height)
+            solid.line(35, 0, 35, Tile.height)
           when TurnSwTile
             path!(solid, tile.paths([0,25]).first)
             path!(solid, tile.paths([35,0]).first)

@@ -192,10 +192,10 @@ class Car
       cars_on_next_path = next_path.cars
       return inf unless cars_on_next_path
       return inf unless cars_on_next_path.first
-      return (cars_on_next_path.first.distance + (current_path.length - @distance))
+      return (cars_on_next_path.first.distance - Car.length + (current_path.length - @distance))
     else
       index_of_this_car = cars_on_this_path.index(self)
-      return (cars_on_this_path[index_of_this_car+1].distance - @distance)
+      return (cars_on_this_path[index_of_this_car+1].distance - Car.length - @distance)
     end
   end
 
