@@ -1,5 +1,5 @@
 class Model
-  attr :cars
+  attr_accessor :cars
   attr_accessor :tile_grid
   attr_reader :time
 
@@ -25,7 +25,7 @@ class Model
   end
 
   def init_small_town
-    @tile_grid << [TurnSeTile.new, TcrossNTile.new, TurnSwTile.new]
+    @tile_grid << [TcrossNGenTile.new, TcrossNTile.new, TurnSwTile.new]
     @tile_grid << [VerticalTile.new, VerticalTile.new, VerticalTile.new]
     @tile_grid << [TurnNeTile.new, TcrossSTile.new, TurnNwTile.new]
     @tile_grid.reverse!
@@ -33,14 +33,20 @@ class Model
     @tile_grid.each_with_index do |tiles, y|
       tiles.each_with_index do |tile, x|
         start = tile.start_pos
-        @cars << Car.new(start[:path], start[:distance], [x,y], tile_grid)
+#        @cars << Car.new(start[:path], start[:distance], [x,y], tile_grid)
       end
     end
   end
 
-  def step!(step_length) #seconds
+  def step!(step_length)  # step length in seconds
     cars.each do |c|
       c.step!(step_length)
+    end
+
+    @tile_grid.each do |tiles|
+      tiles.each do |t|
+        t.step!(step_length, self)
+      end
     end
     cars.delete_if{|c| c.dead}
     @time += step_length
