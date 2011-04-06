@@ -65,7 +65,10 @@ class Car
       if not next_path.kind_of?(LockablePath) or try_lock_paths! next_path
         puts "removing #{@number} from #{current_path}"
         current_path.delete_car!(self)
-        unlock_paths!
+        begin
+          unlock_paths!
+        rescue
+        end
         @distance -= current_path.length
         @prev_grid_pos = grid_pos
         @grid_pos = next_grid_pos
@@ -80,6 +83,10 @@ class Car
           @dead = true
         end
       else
+        begin
+          unlock_paths!
+        rescue
+        end
         puts "#{@number} stepped back"
         #@distance -= speed * time
         @distance = current_path.length - Car.length
