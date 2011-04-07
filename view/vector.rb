@@ -69,6 +69,13 @@ class Vector
           when TcrossWTile
             paths = tile.paths([Tile.width,35]) + tile.paths([25,Tile.height]) + tile.paths([35,0])
             paths.each { |p| path!(solid,p)}
+          when CrossTile
+            paths = []
+            paths += tile.paths([Tile.width,35]) # from east
+            paths += tile.paths([25,Tile.height]) # from north
+            paths += tile.paths([35,0]) # from south
+            paths += tile.paths([0, 25]) # from west
+            paths.each { |p| path!(solid,p)}
           else
             raise "Unknown tile"
         end
