@@ -59,45 +59,34 @@ class Car
       #puts "#{@number} stopped from going backwards"
       @speed = 0
     end
-    @distance += speed * time
 
-    if @distance > current_path.length then
-      if not next_path.kind_of?(LockablePath) or try_lock_paths! next_path
-        puts "removing #{@number} from #{current_path}"
-        current_path.delete_car!(self)
-        begin
-          unlock_paths!
-        rescue
-        end
-        @distance -= current_path.length
-        @prev_grid_pos = grid_pos
-        @grid_pos = next_grid_pos
-        @prev_path = current_path
-        @current_path = next_path
-        @next_path = nil
-        if current_path
-          puts "Adding #{@number} to #{current_path}"
-          current_path.add_car!(self)
-        else
-          puts "#{@number} dead"
-          @dead = true
-        end
+    new_distance = @distance + speed * time
+    if new_distance > current_path.length and try_lock_paths! next_path then
+      puts "removing #{@number} from #{current_path}"
+      current_path.delete_car!(self)
+      unlock_paths!
+      @distance = new_distance - current_path.length
+      @prev_grid_pos = grid_pos
+      @grid_pos = next_grid_pos
+      @prev_path = current_path
+      @current_path = next_path
+      @next_path = nil
+      if current_path
+        puts "Adding #{@number} to #{current_path}"
+        current_path.add_car!(self)
       else
-        begin
-          unlock_paths!
-        rescue
-        end
-        puts "#{@number} stepped back"
-        #@distance -= speed * time
-        @distance = current_path.length - Car.length
+        puts "#{@number} dead"
+        @dead = true
       end
+    else
+      @distance = [new_distance, current_path.length].min
     end
   end
 
   def unlock_paths!
     if current_path.kind_of? LockablePath
       current_path.crossing_paths.each do |path|
-        path.release(self)
+        path.release(self) if path.has_lock?(self)
       end
     end
   end
@@ -123,6 +112,17 @@ class Car
         @acceleration = 0
         @waiting_for_path = n_path
         return false
+      end
+    end
+    return true
+  end
+
+  def has_locks_for_path?(n_path)
+    if n_path.kind_of? LockablePath
+      n_path.crossing_paths.each do |path|
+        if not path.has_lock?(self)
+          return false
+        end
       end
     end
     return true
@@ -191,7 +191,7 @@ class Car
     if cars_on_this_path.last == self # no cars in front, on this tile
       return inf unless next_path
       if next_path.kind_of?(LockablePath)
-        if next_path.is_locked? and not next_path.has_lock?(self)
+        if next_path.is_locked? and not has_locks_for_path?(next_path)
           return (current_path.length - @distance)
         end
       end

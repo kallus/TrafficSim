@@ -1,7 +1,8 @@
 class TcrossNGenTile < Tile
 
+  # should possibly get these from constructor
   SECONDS_BETWEEN_CARS = 15
-  NUMBER_OF_CARS_TO_PRODUCE = 8
+  NUMBER_OF_CARS_TO_PRODUCE = 14
 
   def initialize
     @time_since_last_creation = SECONDS_BETWEEN_CARS  # create a car immediately
