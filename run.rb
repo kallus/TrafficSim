@@ -1,7 +1,7 @@
 require "trafficsim"
 require "view/vector"
 
-settings = {:step => 0.6, :end => 300}
+settings = {:step => 0.6, :end => 60}
 
 srand(33)
 puts rand.to_s

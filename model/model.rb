@@ -27,7 +27,7 @@ class Model
   def init_small_town
     @tile_grid << [TcrossNGenTile.new, TcrossNTile.new, TurnSwTile.new]
     @tile_grid << [VerticalTile.new, VerticalTile.new, VerticalTile.new]
-    @tile_grid << [TurnNeTile.new, TcrossSTile.new, TurnNwTile.new]
+    @tile_grid << [TurnNeTile.new, TcrossSTile.new, TcrossETile.new]
     @tile_grid.reverse!
     # add one car to each tile
     @tile_grid.each_with_index do |tiles, y|

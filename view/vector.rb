@@ -63,6 +63,9 @@ class Vector
           when TcrossSTile
             paths = tile.paths([0,25]) + tile.paths([25,Tile.height]) + tile.paths([Tile.width,35])
             paths.each { |p| path!(solid,p)}
+          when TcrossETile
+            paths = tile.paths([0,25]) + tile.paths([25,Tile.height]) + tile.paths([35,0])
+            paths.each { |p| path!(solid,p)}
           else
             raise "Unknown tile"
         end
