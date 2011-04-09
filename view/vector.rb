@@ -1,7 +1,7 @@
 require 'rvg/rvg'
 include Magick
 
-RVG::dpi = 144/2
+RVG::dpi = 144/8
 
 class Vector
   class << self
@@ -76,6 +76,7 @@ class Vector
             paths += tile.paths([35,0]) # from south
             paths += tile.paths([0, 25]) # from west
             paths.each { |p| path!(solid,p)}
+          when EmptyTile
           else
             raise "Unknown tile"
         end

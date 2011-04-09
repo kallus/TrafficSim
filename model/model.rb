@@ -39,6 +39,11 @@ class Model
       end
     end
   end
+  
+  def init_town(width, height, connectivity)
+    @tile_grid = MapGenerator.new_map(width, height, connectivity)
+    @tile_grid.last[0] = TcrossNGenTile.new
+  end
 
   def step!(step_length)  # step length in seconds
     cars.each do |c|

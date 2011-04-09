@@ -1,4 +1,3 @@
-#not done nor tested
 class TurnNwTile < Tile
   def initialize
 		@paths = []

@@ -1,13 +1,14 @@
 require "trafficsim"
 require "view/vector"
 
-settings = {:step => 0.6, :end => 60}
+settings = {:step => 0.6, :end => 600}
 
 srand(33)
 puts rand.to_s
 
 model = Model.new
-model.init_small_town
+#model.init_small_town
+model.init_town(20,15, 0.7)
 #model.init_boring_town
 
 until model.time > settings[:end] do
