@@ -39,17 +39,51 @@ class MapGenerator
         x = (rand * (width-2)).to_i+1
         y = (rand * (height-2)).to_i+1
         tile = map[y][x]
-        if tile.kind_of? HorizontalTile and map[y][x-1].kind_of? CrossTile and map[y][x+1].kind_of? CrossTile
-          map[y][x] = EmptyTile.new
-          map[y][x-1] = TcrossETile.new
-          map[y][x+1] = TcrossWTile.new
-          remove -= 1
+        if tile.kind_of? HorizontalTile
+          if map[y][x-1].kind_of? CrossTile and map[y][x+1].kind_of? CrossTile
+            map[y][x] = EmptyTile.new
+            map[y][x-1] = TcrossETile.new
+            map[y][x+1] = TcrossWTile.new
+            remove -= 1
+          elsif map[y][x-1].kind_of? TcrossWTile and map[y][x+1].kind_of? CrossTile
+            map[y][x] = EmptyTile.new
+            map[y][x-1] = VerticalTile.new
+            map[y][x+1] = TcrossWTile.new
+            remove -= 1
+          elsif map[y][x-1].kind_of? CrossTile and map[y][x+1].kind_of? TcrossETile
+            map[y][x] = EmptyTile.new
+            map[y][x-1] = TcrossETile.new
+            map[y][x+1] = VerticalTile.new
+            remove -= 1
+          elsif map[y][x-1].kind_of? TcrossWTile and map[y][x+1].kind_of? TcrossETile
+            map[y][x] = EmptyTile.new
+            map[y][x-1] = VerticalTile.new
+            map[y][x+1] = VerticalTile.new
+            remove -= 1
+          end
         end
-        if tile.kind_of? VerticalTile and map[y-1][x].kind_of? CrossTile and map[y+1][x].kind_of? CrossTile
-          map[y][x] = EmptyTile.new
-          map[y-1][x] = TcrossNTile.new
-          map[y+1][x] = TcrossSTile.new
-          remove -= 1
+        if tile.kind_of? VerticalTile
+          if map[y-1][x].kind_of? CrossTile and map[y+1][x].kind_of? CrossTile
+            map[y][x] = EmptyTile.new
+            map[y-1][x] = TcrossNTile.new
+            map[y+1][x] = TcrossSTile.new
+            remove -= 1
+          elsif map[y-1][x].kind_of? TcrossSTile and map[y+1][x].kind_of? CrossTile
+            map[y][x] = EmptyTile.new
+            map[y-1][x] = HorizontalTile.new
+            map[y+1][x] = TcrossSTile.new
+            remove -= 1
+          elsif map[y-1][x].kind_of? CrossTile and map[y+1][x].kind_of? TcrossNTile
+            map[y][x] = EmptyTile.new
+            map[y-1][x] = TcrossNTile.new
+            map[y+1][x] = HorizontalTile.new
+            remove -= 1
+          elsif map[y-1][x].kind_of? TcrossSTile and map[y+1][x].kind_of? TcrossNTile
+            map[y][x] = EmptyTile.new
+            map[y-1][x] = HorizontalTile.new
+            map[y+1][x] = HorizontalTile.new
+            remove -= 1
+          end
         end
       end
       return map
