@@ -64,19 +64,20 @@ class Model
   
   def out_paths(origin)
     width = @tile_grid.first.length
+    height = @tile_grid.length
     out_nw = @tile_grid.last[0].all_paths.select{|p| p.end_direction == [-1, 0]}
     out_ne = @tile_grid.last[width-1].all_paths.select{|p| p.end_direction == [1, 0]}
     out_sw = @tile_grid.first[0].all_paths.select{|p| p.end_direction == [-1, 0]}
     out_se = @tile_grid.first[width-1].all_paths.select{|p| p.end_direction == [1, 0]}
     all = out_nw + out_ne + out_sw + out_se
     case origin
-    when 'nw'
+    when [0, height-1]
       all - out_nw
-    when 'ne'
+    when [width-1, height-1]
       all - out_ne
-    when 'sw'
+    when [0, 0]
       all - out_sw
-    when 'se'
+    when [width-1, 0]
       all - out_se
     end
   end
