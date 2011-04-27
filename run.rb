@@ -14,6 +14,14 @@ model.init_town(20,15, 0.4)
 #model.init_boring_town
 model.init_graph
 
+# create a high res map with path numbers
+RVG::dpi = 144/2
+t = model.time
+model.time = -1
+Vector.draw!(model.cars, model.tile_grid, model.time)
+model.time = t
+RVG::dpi = 144/8
+
 i = 0
 until model.time > settings[:end] do
   print "\r%d%%" % [model.time*100.0/settings[:end]]

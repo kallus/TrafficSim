@@ -1,7 +1,7 @@
 class Model
   attr_accessor :cars
   attr_accessor :tile_grid
-  attr_reader :time
+  attr_accessor :time
   attr_reader :graph
 
   def initialize
