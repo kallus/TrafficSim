@@ -1,6 +1,7 @@
 class Path
   attr_reader :length
   attr_reader :end_point
+  attr_reader :number
   @@serial_number = 1
 
   def initialize(parameterization, length, end_point)

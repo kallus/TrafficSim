@@ -34,6 +34,16 @@ class Vector
  
     def tile!(canvas, tile, x, y)
       canvas.g.translate(x, y) do |solid|
+        if RVG::dpi >= 144/2 and tile.all_paths != nil
+          path_nums = tile.all_paths.collect { |p| p.number.to_s }
+          path_groups = []
+          path_nums.each_slice(3) { |g3| path_groups << g3.join(", ") }
+          path_string = path_groups.join(",\n")
+          if path_string.length > 0
+            solid.g.matrix(1,0,0,-1,0,0).translate(0, -20).scale(0.3).text(0, 0, path_string)
+          end
+        end
+
         #solid.styles(:stroke=>'black', :stroke_width=>0.2)
         case tile
           when HorizontalTile
