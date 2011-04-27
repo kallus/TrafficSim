@@ -62,7 +62,7 @@ class Car
 
     new_distance = @distance + speed * time
     if new_distance > current_path.length and try_lock_paths! next_path then
-      puts "removing #{@number} from #{current_path}"
+      puts "removing #{@number} from #{current_path}" if $debug
       current_path.delete_car!(self)
       unlock_paths!
       @distance = new_distance - current_path.length
@@ -72,10 +72,10 @@ class Car
       @current_path = next_path
       @next_path = nil
       if current_path
-        puts "Adding #{@number} to #{current_path}"
+        puts "Adding #{@number} to #{current_path}" if $debug
         current_path.add_car!(self)
       else
-        puts "#{@number} dead"
+        puts "#{@number} dead" if $debug
         @dead = true
       end
     else
@@ -95,7 +95,7 @@ class Car
     if n_path.kind_of? LockablePath
       all_available = true
       n_path.crossing_paths.each do |path|
-        puts "#{@number} looking at #{path}"
+        puts "#{@number} looking at #{path}" if $debug
         if path.is_locked? and not path.has_lock?(self)
           all_available = false
         end
@@ -107,7 +107,7 @@ class Car
         end
         @waiting_for_path = nil
       else
-        puts "#{@number} emergency brake"
+        puts "#{@number} emergency brake" if $debug
         @speed = 0
         @acceleration = 0
         @waiting_for_path = n_path
@@ -168,15 +168,15 @@ class Car
 
     n = next_grid_pos
     if n[0] >= @grid_size[0] || n[1] >= @grid_size[1] || n[0] < 0 || n[1] < 0 then
-      puts "next grid position out of bounds"
-      puts grid_pos
-      puts next_grid_pos
+      puts "next grid position out of bounds" if $debug
+      puts grid_pos if $debug
+      puts next_grid_pos if $debug
       return false
     end
 
     paths = @tile_grid[n[1]][n[0]].paths(current_path.next_entrance_point)
     if paths.empty? then
-      puts "found no next path"
+      puts "found no next path" if $debug
       return false
     end
 

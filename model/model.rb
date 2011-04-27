@@ -7,6 +7,7 @@ class Model
     @time = 0
     @cars = []
     @tile_grid = []
+    @car_creators = []
   end
 
   def init_boring_town
@@ -42,8 +43,21 @@ class Model
   
   def init_town(width, height, connectivity)
     @tile_grid = MapGenerator.new_map(width, height, connectivity)
-    @tile_grid.last[0] = TcrossNGenTile.new
-    @tile_grid.first[@tile_grid.first.length-1] = TcrossSTile.new
+    width = @tile_grid.first.length
+    height = @tile_grid.length
+    nw = TcrossNTile.new
+    @tile_grid.last[0] = nw
+    ne = TcrossNTile.new
+    @tile_grid.last[width-1] = ne
+    sw = TcrossSTile.new
+    @tile_grid.first[0] = sw
+    se = TcrossSTile.new
+    @tile_grid.first[width-1] = se
+
+    @car_creators << CarCreator.new(@cars, @tile_grid, [0, height-1], nw.paths([0, 25]), 0.25, 10)
+    @car_creators << CarCreator.new(@cars, @tile_grid, [width-1, height-1], ne.paths([Tile.width, 35]), 0.25, 10)
+    @car_creators << CarCreator.new(@cars, @tile_grid, [0, 0], sw.paths([0, 25]), 0.25, 10)
+    @car_creators << CarCreator.new(@cars, @tile_grid, [width-1, 0], se.paths([Tile.width, 35]), 0.25, 10)
   end
 
   def step!(step_length)  # step length in seconds
@@ -51,11 +65,10 @@ class Model
       c.step!(step_length)
     end
 
-    @tile_grid.each do |tiles|
-      tiles.each do |t|
-        t.step!(step_length, self)
-      end
+    @car_creators.each do |cc|
+      cc.step!(step_length)
     end
+
     cars.delete_if{|c| c.dead}
     @time += step_length
   end

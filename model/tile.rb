@@ -7,9 +7,6 @@ class Tile
     @start_positions.shift
   end
 
-  def step!(time, model)
-  end
-
   class << self
     def width
       60

@@ -9,12 +9,12 @@ class LockablePath < Path
 
   def try_lock(new_owner)
     if @locked
-      puts "#{new_owner.number} could not lock #{self}, owned by #{@owner.number}"
+      puts "#{new_owner.number} could not lock #{self}, owned by #{@owner.number}" if $debug
       return false
     else
       @owner = new_owner
       @locked = true
-      puts "#{new_owner.number} locked #{self}"
+      puts "#{new_owner.number} locked #{self}" if $debug
       return true
     end
   end
@@ -37,7 +37,7 @@ class LockablePath < Path
     else
       @owner = nil
       @locked = false
-      puts "#{car.number} released #{self}"
+      puts "#{car.number} released #{self}" if $debug
     end
   end
 end
