@@ -17,11 +17,11 @@ class Model
     tile_grid << [TurnNeTile.new, TcrossSTile.new, TurnNwTile.new]
     tile_grid.reverse!
     start = tile_grid[0][0].start_pos
-    car1 = Car.new(start[:path], start[:distance], [0, 0], tile_grid)
+    car1 = Car.new(start[:path], start[:distance], [0, 0], self)
     car1.target_speed = 16
     @cars << car1
     start = tile_grid[0][1].start_pos
-    car2 = Car.new(start[:path], start[:distance], [1, 0], tile_grid)
+    car2 = Car.new(start[:path], start[:distance], [1, 0], self)
     car2.target_speed = 6
     car2.try_lock_paths! car2.current_path
     @cars << car2
