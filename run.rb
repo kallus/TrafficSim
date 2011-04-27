@@ -6,7 +6,7 @@ settings = {:step => 0.6, :end => 2400, :skip_steps => 10}
 $debug = false
 
 srand(33)
-puts rand.to_s
+puts rand.to_s if $debug
 
 model = Model.new
 #model.init_small_town

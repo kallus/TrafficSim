@@ -61,6 +61,36 @@ class Model
     @car_creators << CarCreator.new(@cars, @tile_grid, [0, 0], sw.paths([0, 25]), 0.25, 10)
     @car_creators << CarCreator.new(@cars, @tile_grid, [width-1, 0], se.paths([Tile.width, 35]), 0.25, 10)
   end
+  
+  def out_paths(origin)
+    width = @tile_grid.first.length
+    out_nw = @tile_grid.last[0].all_paths.select{|p| p.end_direction == [-1, 0]}
+    out_ne = @tile_grid.last[width-1].all_paths.select{|p| p.end_direction == [1, 0]}
+    out_sw = @tile_grid.first[0].all_paths.select{|p| p.end_direction == [-1, 0]}
+    out_se = @tile_grid.first[width-1].all_paths.select{|p| p.end_direction == [1, 0]}
+    all = out_nw + out_ne + out_sw + out_se
+    case origin
+    when 'nw'
+      all - out_nw
+    when 'ne'
+      all - out_ne
+    when 'sw'
+      all - out_sw
+    when 'se'
+      all - out_se
+    end
+  end
+
+  def target_paths
+    width = @tile_grid.first.length
+    height = @tile_grid.length
+    target_paths = []
+    target_paths << @tile_grid[height/4 + (height/4) % 2][width/4 + (width/4) % 2].all_paths.first
+    target_paths << @tile_grid[3*height/4 + (3*height/4) % 2][width/4 + (width/4) % 2].all_paths.first
+    target_paths << @tile_grid[height/4 + (height/4) % 2][3*width/4 + (3*width/4) % 2].all_paths.first
+    target_paths << @tile_grid[3*height/4 + (3*height/4) % 2][3*width/4 + (3*width/4) % 2].all_paths.first
+    target_paths
+  end
 
   def init_graph
     dg = Digraph.new
@@ -101,7 +131,7 @@ class Model
     nx = x + path.end_direction[0]
     ny = y + path.end_direction[1]
     if nx >= @tile_grid[0].length or ny >= @tile_grid.length or nx < 0 or ny < 0
-      puts "next grid position out of bounds"
+      puts "next grid position out of bounds" if $debug
       return nil
     end
     return @tile_grid[ny][nx]
