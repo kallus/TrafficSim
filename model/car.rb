@@ -9,7 +9,7 @@ class Car
   attr_accessor :target_speed
   @@serial_number = 1
 
-  def initialize(path, distance, grid_pos, tile_grid)
+  def initialize(path, distance, grid_pos, model, targets)
     @number = @@serial_number
     @@serial_number += 1
 
@@ -19,8 +19,22 @@ class Car
     @next_path = nil
     @distance = distance
     @grid_pos = grid_pos
-    @tile_grid = tile_grid
+    @model = model
+    @targets = targets
+    @tile_grid = model.tile_grid
     @grid_size = [@tile_grid[0].length,@tile_grid.length]
+
+    @route = []
+    if @targets != nil and @targets.length > 0
+      @route = @model.graph.astar(path, @targets[rand(@targets.length)], proc { return 1 }, {})
+      if @route.length == 0
+        puts "couldn't find route!"
+      end
+      @route.shift
+#      puts "--- found route"
+#      puts @route.collect { |e| e.inspect }.join(", ")
+#      puts "---"
+    end
 
     @speed = 0
     @acceleration = 0
@@ -163,6 +177,11 @@ class Car
 
   def next_path
     if @next_path != nil
+      return @next_path
+    end
+
+    if not @route.empty?
+      @next_path = @route.shift
       return @next_path
     end
 

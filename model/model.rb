@@ -56,10 +56,10 @@ class Model
     se = TcrossSTile.new
     @tile_grid.first[width-1] = se
 
-    @car_creators << CarCreator.new(@cars, @tile_grid, [0, height-1], nw.paths([0, 25]), 0.25, 10)
-    @car_creators << CarCreator.new(@cars, @tile_grid, [width-1, height-1], ne.paths([Tile.width, 35]), 0.25, 10)
-    @car_creators << CarCreator.new(@cars, @tile_grid, [0, 0], sw.paths([0, 25]), 0.25, 10)
-    @car_creators << CarCreator.new(@cars, @tile_grid, [width-1, 0], se.paths([Tile.width, 35]), 0.25, 10)
+    @car_creators << CarCreator.new(@cars, self, [0, height-1], nw.paths([0, 25]), 0.25, 10)
+    @car_creators << CarCreator.new(@cars, self, [width-1, height-1], ne.paths([Tile.width, 35]), 0.25, 10)
+    @car_creators << CarCreator.new(@cars, self, [0, 0], sw.paths([0, 25]), 0.25, 10)
+    @car_creators << CarCreator.new(@cars, self, [width-1, 0], se.paths([Tile.width, 35]), 0.25, 10)
   end
   
   def out_paths(origin)

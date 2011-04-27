@@ -1,6 +1,6 @@
 class CarCreator
-  def initialize(cars, tile_grid, grid_pos, paths, cars_per_second, count)
-    @tile_grid = tile_grid
+  def initialize(cars, model, grid_pos, paths, cars_per_second, count)
+    @model = model
     @grid_pos = grid_pos
     @paths = paths
     @cars_per_second = cars_per_second
@@ -21,7 +21,7 @@ class CarCreator
   end
 
   def create!
-    @cars << Car.new(@path, 10, @grid_pos, @tile_grid)
+    @cars << Car.new(@path, 10, @grid_pos, @model, @model.out_paths(@grid_pos))
   end
 
   private
