@@ -7,6 +7,10 @@ class LockablePath < Path
     @owner = nil
   end
 
+  def inspect
+    "Lockable" + super.to_s
+  end
+
   def try_lock(new_owner)
     if @locked
       puts "#{new_owner.number} could not lock #{self}, owned by #{@owner.number}"

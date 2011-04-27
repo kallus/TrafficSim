@@ -3,6 +3,10 @@ class Tile
     @paths.select{|p| p.point(0) == entrance_point}
   end
 
+  def all_paths
+    @paths
+  end
+
   def start_pos
     @start_positions.shift
   end

@@ -1,3 +1,6 @@
+require "rubygems"
+require "gratr"
+require "gratr/import"
 require "model/model"
 require "model/tile"
 require "model/horizontal_tile"

@@ -1,14 +1,21 @@
 class Path
   attr_reader :length
   attr_reader :end_point
+  @@serial_number = 1
 
   def initialize(parameterization, length, end_point)
     @parameterization = parameterization
     @length = length
     @end_point = end_point
     @cars = []
+    @number = @@serial_number
+    @@serial_number += 1
   end
-  
+
+  def inspect
+    "Path<" + @number.to_s + ">"
+  end
+
   def point(distance)
     if distance > length
       raise "distance too large"
@@ -43,5 +50,4 @@ class Path
       puts "tried to remove car which wasn't in this tile"
     end
   end
-
 end

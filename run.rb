@@ -10,6 +10,7 @@ model = Model.new
 #model.init_small_town
 model.init_town(20,15, 0.4)
 #model.init_boring_town
+model.init_graph
 
 i = 0
 until model.time > settings[:end] do
