@@ -1,3 +1,6 @@
+require "rubygems"
+require "gratr"
+require "gratr/import"
 require "model/car_creator"
 require "model/model"
 require "model/tile"
