@@ -38,7 +38,7 @@ we gather data about the global characteristics of the system.
 \subsection{Car types}
 \subsubsection{Random cars}
 \subsubsection{Cars with goals}
-\subsubsubsection{Path finding}
+\subsubsection{Path finding}
 In order to get a path from the car's current path to the destination we use the
 A* path finding algorithm \cite{astar}, which is implemented in the GRaph Theory
 for Ruby library (GRATR) \cite{gratr}. In order to be able to use GRATR, a
@@ -48,10 +48,18 @@ represented by the first node leads to the path represented by the second node.
 
 The A* algorithm does not always find the shortest path, but manual inspection
 of the paths chosen for cars showed that it never picked paths that were
-unreasonably long. Since we don't require the shortest path, this is acceptable.
-Indeed, one could imagine that a driver has some personal reasons for choosing
-a slightly longer path, perhaps because he or she enjoys the scenery of this
-path.
+unreasonably long. Since we do not require the shortest path, this is
+acceptable. Indeed, one could imagine that a driver has some personal reasons
+for choosing a slightly longer path, perhaps because he or she enjoys the
+scenery of this path.
+
+An alternative would have been to use Dijkstra's path finding algorithm, which
+would find the shortest path. This algorithm is also implemented in the GRATR
+library, so using it instead of A* is easy. Unfortunately, our graph contains
+around 600 nodes and 750 edges, and running Dijkstra's algorithm (as implemented
+in GRATR) on this graph takes far too long. We did not consider it worthwhile
+to spend time on finding a faster implementation of Dijkstra's path finding
+algorithm.
 
 \section{ODE description of car velocity}
 \subsection{Gap acceptance}
