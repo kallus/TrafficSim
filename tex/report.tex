@@ -26,7 +26,7 @@ described as a fluid, or at the microscropic level, where the behaviour of
 individual cars is described. When modelling traffic as a fluid, there has
 to be quite a lot of cars and the gaps in between them must be small. Only
 then is it possible to get a reasonable approximation by viewing the traffic
-as a continuum. \cite{aziz}
+as a continuum. \cite{gazis}
 
 In this project we use a microscopic model, and by stochastic simulations
 we gather data about the global characteristics of the system. The model is agent based, a behaviour is defined for individual cars. The interaction of agents creates a system that can be examined.
@@ -47,7 +47,7 @@ Cars of both types have their traffic behaviour in common, except for the way th
 Random cars are used in the model to add noise and to make cars occur in all parts of the city. The number of random cars will be constant over time, random cars are not created after the initialization of the model and they do not leave the city. The number of random cars is an input parameter to the model. As a parallel to reality the random cars can be thought of as taxi cars or residents of the city running local errands. The use of random cars is a simplifications, in reality this behaviour is of course not random.
 \subsubsection{Cars with goals}
 Cars with goals are introduced at the four corners of the city, and assigned with a randomly chosen other corner at which they will leave the city. The purpose of this car type is to have a way to estimate the effectivity of the traffic network by measuring the time it takes for cars to drive through the city. These cars can be thought of as cars that are not residents of the city but driving through the city with some other city as goal. Cars with goals are entering the city at a constant rate of cars per time unit. The \textit{drive in rate} is an input parameter to the model.
-\subsubsubsection{Path finding}
+\subsubsection{Path finding}
 In order to get a path from the car's current path to the destination we use the
 A* path finding algorithm \cite{astar}, which is implemented in the GRaph Theory
 for Ruby library (GRATR) \cite{gratr}. In order to be able to use GRATR, a
@@ -81,7 +81,7 @@ In total, the input parameters for the model are width, height and connectivity 
 \bibitem{haight} Frank A. Haight
 {\it Mathematical theories of traffic flow} {\bf 1963}
 
-\bibitem{aziz} Denos C. Aziz
+\bibitem{gazis} Denos C. Gazis
 {\it Traffic Theory} {\bf 2002}
 
 \bibitem{gratr} Shawn Patrick Garbett
