@@ -26,12 +26,12 @@ class Car
 
     @route = []
     if @targets != nil and @targets.length > 0
-      @route = @model.graph.astar(path, @targets[rand(@targets.length)], proc { return 1 }, {})
+      @route = @model.graph.best_first(path, @targets[rand(@targets.length)], {})
       if @route.length == 0
         puts "couldn't find route!"
       end
       @route.shift
-#      puts "--- found route"
+#      puts "--- found route for " + @number.to_s
 #      puts @route.collect { |e| e.inspect }.join(", ")
 #      puts "---"
     end
