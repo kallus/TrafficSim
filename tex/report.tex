@@ -26,14 +26,10 @@ described as a fluid, or at the microscropic level, where the behaviour of
 individual cars is described. When modelling traffic as a fluid, there has
 to be quite a lot of cars and the gaps in between them must be small. Only
 then is it possible to get a reasonable approximation by viewing the traffic
-as a continuum. \cite{aziz}
+as a continuum. \cite{gazis}
 
 In this project we use a microscopic model, and by stochastic simulations
-we gather data about the global characteristics of the system. 
-
-modelling traffic flow
-
-dynamic agent based model
+we gather data about the global characteristics of the system. The model is agent based, a behaviour is defined for individual cars. The interaction of agents creates a system that can be examined.
 
 \section{Model}
 The model consists of a \textit{city} and cars of two different types. In this model the city is a non-complete lattice of roads with intersections. All roads have two lanes, one in each direction. The two types of cars differ only in the way their direction is chosen. One type of cars have an assigned goal and uses a path finding algorithm to approach that goal. The other type of car choses a random direction each time it encounters an intersection.
@@ -64,9 +60,12 @@ The city is created in this way to be more realistic and to show more interestin
 In summary, the generation of the city for the model contributes with three parameters for the model: width, height and connectivity.
 \subsection{Car types}
 As mentioned earlier, the model has two types of cars, random cars and cars with goals. The two types are choosen to make the model as simple as possible, but to still show some interesting and measurable behavior.
+
+Cars of both types have their traffic behaviour in common, except for the way their directions are chosen at intersections. All cars have an individual random target velocity from a normal distribution with a \textit{mean velocity} and \textit{velocity deviation}. All cars have the same \textit{target acceleration} for reaching their target velocity and for braking to avoid collitions. All cars have the same \textit{target distance} which they try to keep from cars in front of them. Details of the cars traffic behaviour will be discussed in a later section.
 \subsubsection{Random cars}
-Random cars are used in the model to add noise and to make cars occur in all parts of the city. The number of random cars will be constant over time, random cars are not created after the initialization of the model and they do not leave the city. The number of random cars is an input parameter to the model.
+Random cars are used in the model to add noise and to make cars occur in all parts of the city. The number of random cars will be constant over time, random cars are not created after the initialization of the model and they do not leave the city. The number of random cars is an input parameter to the model. As a parallel to reality the random cars can be thought of as taxi cars or residents of the city running local errands. The use of random cars is a simplifications, in reality this behaviour is of course not random.
 \subsubsection{Cars with goals}
+Cars with goals are introduced at the four corners of the city, and assigned with a randomly chosen other corner at which they will leave the city. The purpose of this car type is to have a way to estimate the effectivity of the traffic network by measuring the time it takes for cars to drive through the city. These cars can be thought of as cars that are not residents of the city but driving through the city with some other city as goal. Cars with goals are entering the city at a constant rate of cars per time unit. The \textit{drive in rate} is an input parameter to the model.
 \subsubsection{Path finding}
 In order to get a path from the car's current path to the destination we use the
 A* path finding algorithm \cite{astar}, which is implemented in the GRaph Theory
@@ -91,7 +90,7 @@ to spend time on finding a faster implementation of Dijkstra's path finding
 algorithm.
 
 \subsection{Parameters}
-In total, the input parameters for the model are XX. The parameters YY will be kept constant at values that produces a basis for interesting and measurable behaviors. ZZ will be varied and their effect on the model will be examined.
+In total, the input parameters for the model are width, height and connectivity for the city and mean velocity, velocity deviation, target acceleration, target distance and drive in rate for the cars. The parameters YY will be kept constant at values that produces a basis for interesting and measurable behaviors. ZZ will be varied and their effect on the model will be examined.
 
 \section{ODE description of car velocity}
 \subsection{Gap acceptance}
@@ -109,7 +108,7 @@ In total, the input parameters for the model are XX. The parameters YY will be k
 \bibitem{haight} Frank A. Haight
 {\it Mathematical theories of traffic flow} {\bf 1963}
 
-\bibitem{aziz} Denos C. Aziz
+\bibitem{gazis} Denos C. Gazis
 {\it Traffic Theory} {\bf 2002}
 
 \bibitem{gratr} Shawn Patrick Garbett
