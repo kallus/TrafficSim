@@ -1,0 +1,68 @@
+\documentclass[11pt,a4paper]{report}
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{latexsym}
+%\usepackage{epic}
+%\usepackage{eepic}
+\usepackage{amsmath}
+\usepackage{verbatim}
+
+% Stolen settings (unknown origin):
+% Alter some LaTeX defaults for better treatment of figures:
+% See p.105 of "TeX Unbound" for suggested values.
+% See pp. 199-200 of Lamport's "LaTeX" book for details.
+%   General parameters, for ALL pages:
+\renewcommand{\topfraction}{0.9}	% max fraction of floats at top
+\renewcommand{\bottomfraction}{0.8}	% max fraction of floats at bottom
+%   Parameters for TEXT pages (not float pages):
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}     % 2 may work better
+\setcounter{dbltopnumber}{2}    % for 2-column pages
+\renewcommand{\dbltopfraction}{0.9}	% fit big float above 2-col. text
+\renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
+%   Parameters for FLOAT pages (not text pages):
+\renewcommand{\floatpagefraction}{0.7}	% require fuller float pages
+% N.B.: floatpagefraction MUST be less than topfraction !!
+\renewcommand{\dblfloatpagefraction}{0.7}	% require fuller float pages
+
+% remember to use [htp] or [htpb] for placement
+
+\author{Jonatan Kallus (kallus@student.chalmers.se)\\
+Joel Wilsson (wjoel@student.chalmers.se)}
+\date{\today}
+
+\title{Modelling traffic flow}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+\section{Model}
+\subsection{Generating a random city}
+\subsection{Parameters}
+
+\section{Car types}
+\subsection{Random cars}
+\subsection{Cars with goals}
+
+\section{ODE description of car velocity}
+\subsection{Gap acceptance}
+\subsection{Stability}
+\subsection{Phase portrait}
+
+\section{Modelling traffic flow as a fluid}
+
+\section{How parameters affect throughput}
+
+\begin{thebibliography}{99}
+%\bibitem{lindgren} Kristian Lindgren
+%{\it Information Theory for Complex Systems, Lecture Notes} {\bf 2008}
+
+%\bibitem{wiki} Wikipedia
+%{\it Entry for the Ising model} {\bf 2011}
+
+\end{thebibliography}
+
+\end{document}
