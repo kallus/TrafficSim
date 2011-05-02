@@ -21,6 +21,16 @@ Joel Wilsson (wjoel@student.chalmers.se)}
 \maketitle
 
 \section{Introduction}
+Traffic flow can be modelled at a macroscopic level, where traffic flow is
+described as a fluid, or at the microscropic level, where the behaviour of
+individual cars is described. When modelling traffic as a fluid, there has
+to be quite a lot of cars and the gaps in between them must be small. Only
+then is it possible to get a reasonable approximation by viewing the traffic
+as a continuum. \cite{aziz}
+
+In this project we use a microscopic model, and by stochastic simulations
+we gather data about the global characteristics of the system. 
+
 modelling traffic flow
 
 dynamic agent based model
@@ -38,6 +48,20 @@ As mentioned earlier, the model has two types of cars, random cars and cars with
 \subsubsection{Random cars}
 Random cars are used in the model to add noise and to make cars occur in all parts of the city. The number of random cars will be constant over time, random cars are not created after the initialization of the model and they do not leave the city. The number of random cars is an input parameter to the model.
 \subsubsection{Cars with goals}
+\subsubsubsection{Path finding}
+In order to get a path from the car's current path to the destination we use the
+A* path finding algorithm \cite{astar}, which is implemented in the GRaph Theory
+for Ruby library (GRATR) \cite{gratr}. In order to be able to use GRATR, a
+directed graph is constructed from the map. In this graph, there is a node for
+each path in the map and an edge from one node to another if the path
+represented by the first node leads to the path represented by the second node.
+
+The A* algorithm does not always find the shortest path, but manual inspection
+of the paths chosen for cars showed that it never picked paths that were
+unreasonably long. Since we don't require the shortest path, this is acceptable.
+Indeed, one could imagine that a driver has some personal reasons for choosing
+a slightly longer path, perhaps because he or she enjoys the scenery of this
+path.
 
 \subsection{Parameters}
 In total, the input parameters for the model are XX. The parameters YY will be kept constant at values that produces a basis for interesting and measurable behaviors. ZZ will be varied and their effect on the model will be examined.
@@ -58,6 +82,14 @@ In total, the input parameters for the model are XX. The parameters YY will be k
 \bibitem{haight} Frank A. Haight
 {\it Mathematical theories of traffic flow} {\bf 1963}
 
+\bibitem{aziz} Denos C. Aziz
+{\it Traffic Theory} {\bf 2002}
+
+\bibitem{gratr} Shawn Patrick Garbett
+{\it GRAph Theory in Ruby (GRATR)} {\bf 2006}
+
+\bibitem{astar} P. E. Hart, N. J. Nilsson, B. Raphael
+{\it A Formal Basis for the Heuristic Determination of Minimum Cost Paths} {\bf 1968}
 %\bibitem{wiki} Wikipedia
 %{\it Entry for the Ising model} {\bf 2011}
 
