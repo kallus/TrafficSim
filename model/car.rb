@@ -49,7 +49,7 @@ class Car
     @speed = 0
     @acceleration = 0
 
-    @target_speed = 8 + 4 * rand
+    @target_speed = 8 + 2 * rand
     @max_acceleration = 1
     @target_distance = 30
 
@@ -70,7 +70,7 @@ class Car
   def update_acceleration2!
     dtno = distance_to_next_obstruction
     dtnc = distance_to_next_car
-    lambda = 1
+    lambda = 0.2
     following_distance = Car.length*5
 
     if dtno > following_distance
@@ -107,6 +107,8 @@ class Car
       #puts "#{@number} stopped from going backwards"
       @speed = 0
     end
+
+    @speed = @target_speed if @speed > @target_speed
 
     new_distance = @distance + speed * time
     if new_distance > current_path.length and try_lock_paths! next_path then
