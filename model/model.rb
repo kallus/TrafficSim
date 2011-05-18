@@ -58,10 +58,12 @@ class Model
     se = TcrossSTile.new
     @tile_grid.first[width-1] = se
 
-    @car_creators << CarCreator.new(@cars, self, [0, height-1], nw.paths([0, 25]), 0.25, 10)
-    @car_creators << CarCreator.new(@cars, self, [width-1, height-1], ne.paths([Tile.width, 35]), 0.25, 10)
-    @car_creators << CarCreator.new(@cars, self, [0, 0], sw.paths([0, 25]), 0.25, 10)
-    @car_creators << CarCreator.new(@cars, self, [width-1, 0], se.paths([Tile.width, 35]), 0.25, 10)
+    cars_per_second = 1
+    number_of_cars = 10
+    @car_creators << CarCreator.new(@cars, self, [0, height-1], nw.paths([0, 25]), cars_per_second, number_of_cars)
+    @car_creators << CarCreator.new(@cars, self, [width-1, height-1], ne.paths([Tile.width, 35]), cars_per_second, number_of_cars)
+    @car_creators << CarCreator.new(@cars, self, [0, 0], sw.paths([0, 25]), cars_per_second, number_of_cars)
+    @car_creators << CarCreator.new(@cars, self, [width-1, 0], se.paths([Tile.width, 35]), cars_per_second, number_of_cars)
   end
   
   def out_paths(origin)
@@ -118,14 +120,14 @@ class Model
 
   def step!
     cars.each do |c|
-      c.step!(@step_length)
+      c.step!(@step_length) unless c.dead
     end
 
     @car_creators.each do |cc|
       cc.step!(@step_length)
     end
 
-    cars.delete_if{|c| c.dead}
+#    cars.delete_if{|c| c.dead}
     @time += @step_length
   end
 

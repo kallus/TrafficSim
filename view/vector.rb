@@ -24,7 +24,7 @@ class Vector
         end
 
         cars.each do |car|
-          car!(canvas, car)
+          car!(canvas, car) unless car.dead
         end
 
       end

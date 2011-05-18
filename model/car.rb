@@ -5,6 +5,7 @@ class Car
   attr :dead
   attr :speed
   attr :speed_history
+  attr :lifetime
   attr_reader :distance
   attr_reader :number
   attr_reader :nhist
@@ -16,6 +17,7 @@ class Car
     @number = @@serial_number
     @@serial_number += 1
 
+    @lifetime = 0.0
     @dead = false
     @angle = 0
     @current_path = path
@@ -69,7 +71,7 @@ class Car
     dtno = distance_to_next_obstruction
     dtnc = distance_to_next_car
     lambda = 1
-    following_distance = Car.length*8
+    following_distance = Car.length*5
 
     if dtno > following_distance
       @acceleration = @max_acceleration
@@ -96,6 +98,8 @@ class Car
   end
 
   def step!(time) #seconds
+    @lifetime += time
+
     update_speed_history!
     update_acceleration2!
     @speed += @acceleration * time
@@ -106,7 +110,7 @@ class Car
 
     new_distance = @distance + speed * time
     if new_distance > current_path.length and try_lock_paths! next_path then
-      puts "removing #{@number} from #{current_path}" if $debug
+#      puts "removing #{@number} from #{current_path}" if $debug
       current_path.delete_car!(self)
       unlock_paths!
       @distance = new_distance - current_path.length
@@ -116,7 +120,7 @@ class Car
       @current_path = next_path
       @next_path = nil
       if current_path
-        puts "Adding #{@number} to #{current_path}" if $debug
+#        puts "Adding #{@number} to #{current_path}" if $debug
         current_path.add_car!(self)
       else
         puts "#{@number} dead" if $debug
@@ -139,7 +143,7 @@ class Car
     if n_path.kind_of? LockablePath
       all_available = true
       n_path.crossing_paths.each do |path|
-        puts "#{@number} looking at #{path}" if $debug
+#        puts "#{@number} looking at #{path}" if $debug
         if path.is_locked? and not path.has_lock?(self)
           all_available = false
         end
@@ -151,9 +155,11 @@ class Car
         end
         @waiting_for_path = nil
       else
-        puts "#{@number} emergency brake" if $debug
-        @speed = 0
-        @acceleration = 0
+        if @speed > 0 or @acceleration > 0
+#          puts "#{@number} emergency brake" if $debug
+          @speed = 0
+          @acceleration = 0
+        end
         @waiting_for_path = n_path
         return false
       end
@@ -217,9 +223,9 @@ class Car
 
     n = next_grid_pos
     if n[0] >= @grid_size[0] || n[1] >= @grid_size[1] || n[0] < 0 || n[1] < 0 then
-      puts "next grid position out of bounds" if $debug
-      puts grid_pos if $debug
-      puts next_grid_pos if $debug
+#      puts "next grid position out of bounds" if $debug
+#      puts grid_pos if $debug
+#      puts next_grid_pos if $debug
       return false
     end
 
