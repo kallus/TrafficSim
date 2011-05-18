@@ -1,10 +1,14 @@
 class LockablePath < Path
   attr_accessor :crossing_paths
+  attr_accessor :number
+  @@serial = 0
 
   def initialize(parameterization, length, end_point)
     super(parameterization, length, end_point)
     @locked = false
     @owner = nil
+    @number = @@serial
+    @@serial += 1
   end
 
   def inspect
@@ -13,12 +17,12 @@ class LockablePath < Path
 
   def try_lock(new_owner)
     if @locked
-      puts "#{new_owner.number} could not lock #{self}, owned by #{@owner.number}" if $debug
+#      puts "#{new_owner.number} could not lock #{self}, owned by #{@owner.number}" if $debug
       return false
     else
       @owner = new_owner
       @locked = true
-      puts "#{new_owner.number} locked #{self}" if $debug
+#      puts "#{new_owner.number} locked #{self}" if $debug
       return true
     end
   end
@@ -41,7 +45,7 @@ class LockablePath < Path
     else
       @owner = nil
       @locked = false
-      puts "#{car.number} released #{self}" if $debug
+#      puts "#{car.number} released #{self}" if $debug
     end
   end
 end
