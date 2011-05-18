@@ -21,7 +21,9 @@ class CarCreator
   end
 
   def create!
-    @cars << Car.new(@path, 10, @grid_pos, @model, @model.out_paths(@grid_pos))
+    if crossing_is_clear?
+      @cars << Car.new(@path, 10, @grid_pos, @model, @model.out_paths(@grid_pos))
+    end
   end
 
   private
