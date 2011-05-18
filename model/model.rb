@@ -2,14 +2,16 @@ class Model
   attr_accessor :cars
   attr_accessor :tile_grid
   attr_accessor :time
+  attr_accessor :step_length  # step length in seconds
   attr_reader :graph
 
-  def initialize
+  def initialize(step_length)
     @time = 0
     @cars = []
     @tile_grid = []
     @car_creators = []
     @graph = nil
+    @step_length = step_length
   end
 
   def init_boring_town
@@ -114,17 +116,17 @@ class Model
     @graph = dg
   end
 
-  def step!(step_length)  # step length in seconds
+  def step!
     cars.each do |c|
-      c.step!(step_length)
+      c.step!(@step_length)
     end
 
     @car_creators.each do |cc|
-      cc.step!(step_length)
+      cc.step!(@step_length)
     end
 
     cars.delete_if{|c| c.dead}
-    @time += step_length
+    @time += @step_length
   end
 
   private

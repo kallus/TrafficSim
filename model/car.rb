@@ -4,10 +4,13 @@ class Car
   attr :grid_pos
   attr :dead
   attr :speed
+  attr :speed_history
   attr_reader :distance
   attr_reader :number
+  attr_reader :nhist
   attr_accessor :target_speed
   @@serial_number = 1
+  @@time_lag = 2.0   # seconds
 
   def initialize(path, distance, grid_pos, model, targets)
     @number = @@serial_number
@@ -23,6 +26,11 @@ class Car
     @targets = targets
     @tile_grid = model.tile_grid
     @grid_size = [@tile_grid[0].length,@tile_grid.length]
+    @nhist = @@time_lag / model.step_length
+    if @nhist.floor != @nhist.ceil
+      raise "@@time_lag / model.step_length must be a natural number"
+    end
+    @speed_history = Array.new(@nhist, 0)
 
     @route = []
     if @targets != nil and @targets.length > 0
@@ -52,6 +60,27 @@ class Car
     local_to_global(pos)
   end
 
+  def update_speed_history!
+    @speed_history.shift
+    @speed_history << @speed
+  end
+
+  def update_acceleration2!
+    dtno = distance_to_next_obstruction
+    dtnc = distance_to_next_car
+    lambda = 1
+    following_distance = Car.length*8
+
+    if dtno > following_distance
+      @acceleration = @max_acceleration
+    elsif (dtnc >= 0 and dtnc <= dtno)  # next obstacle is a car
+      nc = next_car
+      @acceleration = lambda*(nc.speed_history.first - speed_history.first)
+    else  # any other obstacle has speed zero
+      @acceleration = lambda*(0 - speed_history.first)
+    end
+  end
+
   def update_acceleration!
     dtno = distance_to_next_obstruction
     if dtno < @target_distance
@@ -67,7 +96,8 @@ class Car
   end
 
   def step!(time) #seconds
-    update_acceleration!
+    update_speed_history!
+    update_acceleration2!
     @speed += @acceleration * time
     if speed < 0
       #puts "#{@number} stopped from going backwards"
@@ -201,6 +231,43 @@ class Car
 
     @next_path = paths[rand(paths.length)]
     return @next_path
+  end
+
+  def next_car
+    cars_on_this_path = current_path.cars
+    if cars_on_this_path.last == self  # no cars in front, on this tile
+      return nil unless next_path
+      cars_on_next_path = next_path.cars
+      return nil unless cars_on_next_path
+      return nil unless cars_on_next_path.first
+      return cars_on_next_path.first
+    else
+      index_of_this_car = cars_on_this_path.index(self)
+      return cars_on_this_path[index_of_this_car+1]
+    end
+  end
+
+  def distance_to_next_car
+    nc = next_car
+    return -1 unless nc
+    if nc.current_path == current_path
+      return (nc.distance - Car.length - @distance)
+    else
+      return (nc.distance - Car.length - (current_path.length - @distance))
+    end
+
+    # inf = -1   # ugly hack
+    # cars_on_this_path = current_path.cars
+    # if cars_on_this_path.last == self  # no cars in front, on this tile
+    #   return inf unless next_path
+    #   cars_on_next_path = next_path.cars
+    #   return inf unless cars_on_next_path
+    #   return inf unless cars_on_next_path.first
+    #   return (cars_on_next_path[index_of_this_car+1].distance - Car.length + (current_path.length - @distance))
+    # else
+    #   index_of_this_car = cars_on_this_path.index(self)
+    #   return (cars_on_this_path[index_of_this_car+1].distance - Car.length - @distance)
+    # end
   end
 
   def distance_to_next_obstruction

@@ -34,7 +34,7 @@ class Vector
  
     def tile!(canvas, tile, x, y)
       canvas.g.translate(x, y) do |solid|
-        if RVG::dpi >= 144/2 and tile.all_paths != nil
+        if $debug == true and tile.all_paths != nil
           path_nums = tile.all_paths.collect { |p| p.number.to_s }
           path_groups = []
           path_nums.each_slice(3) { |g3| path_groups << g3.join(", ") }

@@ -93,6 +93,24 @@ algorithm.
 In total, the input parameters for the model are width, height and connectivity for the city and mean velocity, velocity deviation, target acceleration, target distance and drive in rate for the cars. The parameters YY will be kept constant at values that produces a basis for interesting and measurable behaviors. ZZ will be varied and their effect on the model will be examined.
 
 \section{ODE description of car velocity}
+The most important factor for the acceleration of a car is the relative speed between the leading and
+the following car. This leads to the following ordinary differential equation for the acceleration of a car following a leading car \acitepos{gazis}:
+\[ \frac{d^2 x_{n+1}(t + T)}{dt^2} = \lambda \left[ \frac{dx_n(t)}{dt} - \frac{dx_{n+1}(t)}{dt} \right] \]
+where n denotes the number corresponding to the lead car, $n+1$ that of the
+following car, T is the reaction time lag, and $\lambda$ is a coefficient of
+proportionality of the driver reaction to the stimulus. $\lambda$ is known
+as the sensitivity coefficient or the gain factor.
+In this project we use a constant sensitivity coefficient.
+
+Since there is a time lag, each car keeps a record of its previous speeds
+as far back as the time lag requires. A following car can then use this
+``speed history'' to solve the ordinary differential equation above to
+update their acceleration.
+
+A car which does not have second car in front of it which is sufficiently
+close for the first car to be considered as following the second will not
+use equation REF TO EQN ABOVE. Instead, it will use a constant acceleration.
+
 \subsection{Gap acceptance}
 \subsection{Stability}
 \subsection{Phase portrait}
