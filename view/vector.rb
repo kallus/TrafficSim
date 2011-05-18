@@ -8,28 +8,35 @@ class Vector
     def draw!(cars, tile_grid, time)
       grid_size = [tile_grid[0].length,tile_grid.length]
       size = [grid_size[0]*Tile.width,grid_size[1]*Tile.height]
-      @rvg = RVG.new(
-          (grid_size[0]*2.5).in,
-          (grid_size[1]*2.5).in
-        ).viewbox(0,0,size[0],size[1]) do |canvas|
-        canvas.background_fill = 'white'
-        canvas.matrix(1, 0, 0, -1, 0, (grid_size[1]*2.5).in) #changing to cartesian coordinates
+      if @rvg == nil
+        puts "drawing map"
+        @rvg = RVG.new((grid_size[0]*2.5).in,
+                       (grid_size[1]*2.5).in
+                       ).viewbox(0,0,size[0],size[1]) do |canvas|
+          canvas.background_fill = 'white'
+          canvas.matrix(1, 0, 0, -1, 0, (grid_size[1]*2.5).in) #changing to cartesian coordinates
 
-        canvas.g.translate(0,2).matrix(1,0,0,-1,0,0).scale(0.5).text(0, 0, "Time: %.2f sec" % [time])
-
-        tile_grid.each_with_index do |tiles, y|
-          tiles.each_with_index do |tile, x|
-            tile!(canvas, tile, x*Tile.width, y*Tile.height)
+          tile_grid.each_with_index do |tiles, y|
+            tiles.each_with_index do |tile, x|
+              tile!(canvas, tile, x*Tile.width, y*Tile.height)
+            end
           end
         end
-
-        cars.each do |car|
-          car!(canvas, car) unless car.dead
-        end
-
+        @rvg.draw.write("output/map.gif")
       end
 
-      @rvg.draw.write("output/#{("%06.2f" % [time]).sub(".", "")}.gif")
+      frame_rvg = RVG.new((grid_size[0]*2.5).in,
+                          (grid_size[1]*2.5).in).viewbox(0,0,size[0],size[1]) do |c|
+#        c.background_fill = 'white'
+        c.background_image = Magick::Image.read('output/map.gif').first
+        c.matrix(1, 0, 0, -1, 0, (grid_size[1]*2.5).in) #changing to cartesian coordinates
+        c.g.translate(0,2).matrix(1,0,0,-1,0,0).scale(0.5).text(0, 0, "Time: %.2f sec" % [time])
+        cars.each do |car|
+          car!(c, car) unless car.dead
+        end
+      end
+
+      frame_rvg.draw.write("output/#{("%06.2f" % [time]).sub(".", "")}.gif")
     end
  
     def tile!(canvas, tile, x, y)
