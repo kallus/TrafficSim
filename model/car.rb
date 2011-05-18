@@ -70,7 +70,7 @@ class Car
   def update_acceleration2!
     dtno = distance_to_next_obstruction
     dtnc = distance_to_next_car
-    lambda = 0.2
+    lambda = 0.22
     following_distance = Car.length*5
 
     if dtno > following_distance
