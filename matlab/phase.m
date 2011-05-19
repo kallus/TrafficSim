@@ -1,6 +1,6 @@
 t = linspace(0,10,1000);
-c = 1;
-lambda = 5;
+c = 3;
+lambda = 1;
 figure(1);
 clf;
 axis([0 10 0 10]);
