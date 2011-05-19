@@ -57,12 +57,13 @@ class TcrossETile < Tile
 		@paths << ns
 		@paths << sn
 
-    ws.crossing_paths = [ws, ns]
-    sw.crossing_paths = [sw, ns, wn, nw]
-    wn.crossing_paths = [wn, ns, sn, sw]
-    nw.crossing_paths = [nw, sw]
-    ns.crossing_paths = [ns, sw, wn, ws]
-    sn.crossing_paths = [sn, wn]
+    sorter = lambda { |a, b| a.number <=> b.number }
+    ws.crossing_paths = [ws, ns].sort! &sorter
+    sw.crossing_paths = [sw, ns, wn, nw].sort! &sorter
+    wn.crossing_paths = [wn, ns, sn, sw].sort! &sorter
+    nw.crossing_paths = [nw, sw].sort! &sorter
+    ns.crossing_paths = [ns, sw, wn, ws].sort! &sorter
+    sn.crossing_paths = [sn, wn].sort! &sorter
 
     @start_positions = []
     @paths.each do |p|

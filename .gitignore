@@ -2,4 +2,7 @@
 *.swp
 *.gif
 *.svg
+*.aux
+*.log
+report.pdf
 .DS_Store

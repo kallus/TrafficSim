@@ -1,9 +1,9 @@
 require "trafficsim"
 require "view/vector"
 
-settings = {:step => 0.1, :end => 30, :skip_steps => 10}
+settings = {:step => 0.1, :end => 300, :skip_steps => 20}
 
-$debug = false
+$debug = true
 
 srand(33)
 puts rand.to_s if $debug
@@ -21,7 +21,7 @@ t = model.time
 model.time = -1
 Vector.draw!(model.cars, model.tile_grid, model.time)
 model.time = t
-RVG::dpi = 144/8
+#RVG::dpi = 144/8
 
 i = 0
 until model.time > settings[:end] do
@@ -32,3 +32,11 @@ until model.time > settings[:end] do
   i += 1
 end
 puts ""
+
+avg_lifetime = 0.0
+model.cars.each do |car|
+#  puts "#{car.number} lifetime: #{car.lifetime}"
+  avg_lifetime += car.lifetime
+end
+avg_lifetime = avg_lifetime / model.cars.length
+puts "average lifetime: #{avg_lifetime}"
