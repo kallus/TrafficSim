@@ -177,6 +177,39 @@ $c \neq 0$ there are no fixed points. A higher $\lambda$ makes the speed
 approach $c$ faster. As can be seen when comparing figures \ref{phase1-1} and
 \ref{phase1-3}, cars aproach a lower speed faster than a higher speed.
 
+\begin{figure}[ht]
+\centering
+\includegraphics[width=400pt]{phasedelay1-2-05}
+\caption{Phase portrait for ODE, numerically computed.}
+\label{phasedelay1-2-05}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=400pt]{phasedelay1-2-07}
+\caption{Phase portrait for ODE, numerically computed.}
+\label{phasedelay1-2-07}
+\end{figure}
+
+It is possible to make a numerical investigation the ODE with a time delay.
+Equation \ref{ode} can be written as a system of first order equation
+\begin{eqnarray*}
+\frac{dx_1(t)}{dt} &=& x_2(t) \\
+\frac{dx_2(t)}{dt} &=& \lambda \left( c - x_2(t-T) \right)
+\end{eqnarray*}
+with the discrete counterpart
+\begin{eqnarray*}
+\Delta x_1 &=& \Delta t x_2 \\
+\Delta x_2 &=& \lambda \Delta t ( c - x_{2,T})
+\end{eqnarray*}
+where $x_{2,T}$ is the value of $x_2$ approximately $T$ time units back.
+
+
+The trajectories were calculated numerically, and are presented in figures
+\ref{phasedelay1-2-05} and \ref{phasedelay1-2-07}. We can see how the speed of
+the car overshoots the target speed because of the time delay. MATLAB code for
+the numerical computation is presented last in this paper.
+
 \subsection{Gap acceptance}
 \subsection{Stability}
 \subsection{Phase portrait}
@@ -187,6 +220,43 @@ approach $c$ faster. As can be seen when comparing figures \ref{phase1-1} and
 %\section{Modelling traffic flow as a fluid}
 
 \section{How parameters affect throughput}
+
+\section{Numerical computation of phase portrait for ODE with delay}
+\begin{verbatim}
+c = 2;
+lambda = 1;
+T = 0.5;
+
+figure(1);
+clf;
+axis([0 10 0 5]);
+hold on;
+xlabel('x_1 position');
+ylabel('x_2 velocity');
+title(sprintf('Car following phase portrait, \\lambda=%.2f c=%.2f T=%.2f',lambda,c,T));
+
+starts = [2 10; 4 10; 6 10; 8 10;...
+    0 0; 2 0; 4 0; 6 0; 8 0;...
+    0 1; 0 3; 0 5; 0 7; 0 9];
+
+for i = 1:29
+    ts = linspace(0,10,1000);
+    dt = diff(ts); dt = dt(1);
+    %[x1, x2] = ginput(1);
+    x1 = starts(i,1);
+    x2 = starts(i,2);
+    x1s = [x1];
+    x2s = [x2];
+    for t = ts
+        old_x2 = x2s(end-min(round(T/dt), numel(x2s)-1));
+        x2 = x2 + lambda * dt * (c - old_x2);
+        x1 = x1 + dt * x2;
+        x1s = [x1s x1];
+        x2s = [x2s x2];
+    end
+    plot(x1s, x2s);
+end
+\end{verbatim}
 
 \begin{thebibliography}{99}
 \bibitem{haight} Frank A. Haight
