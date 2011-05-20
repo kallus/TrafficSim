@@ -63,7 +63,7 @@ As mentioned earlier, the model has two types of cars, random cars and cars with
 
 Cars of both types have their traffic behaviour in common, except for the way their directions are chosen at intersections. All cars have an individual random target velocity from a normal distribution with a \textit{mean velocity} and \textit{velocity deviation}. All cars have the same \textit{target acceleration} for reaching their target velocity and for braking to avoid collitions. All cars have the same \textit{target distance} which they try to keep from cars in front of them. Details of the cars traffic behaviour will be discussed in a later section.
 \subsubsection{Random cars}
-Random cars are used in the model to add noise and to make cars occur in all parts of the city. The number of random cars will be constant over time, random cars are not created after the initialization of the model and they do not leave the city. The number of random cars is an input parameter to the model. As a parallel to reality the random cars can be thought of as taxi cars or residents of the city running local errands. The use of random cars is a simplifications, in reality this behaviour is of course not random.
+Random cars are used in the model to add noise and to make cars occur in all parts of the city. The number of random cars will be constant over time, random cars are not created after the initialization of the model and they do not leave the city. The \textit{number of random cars} is an input parameter to the model. As a parallel to reality the random cars can be thought of as taxi cars or residents of the city running local errands. The use of random cars is a simplifications, in reality this behaviour is of course not random.
 \subsubsection{Cars with goals}
 Cars with goals are introduced at the four corners of the city, and assigned with a randomly chosen other corner at which they will leave the city. The purpose of this car type is to have a way to estimate the effectivity of the traffic network by measuring the time it takes for cars to drive through the city. These cars can be thought of as cars that are not residents of the city but driving through the city with some other city as goal. Cars with goals are entering the city at a constant rate of cars per time unit. The \textit{drive in rate} is an input parameter to the model.
 \subsubsection{Path finding}
@@ -90,12 +90,15 @@ to spend time on finding a faster implementation of Dijkstra's path finding
 algorithm.
 
 \subsection{Parameters}
-In total, the input parameters for the model are width, height and connectivity for the city and mean velocity, velocity deviation, target acceleration, target distance and drive in rate for the cars. The parameters YY will be kept constant at values that produces a basis for interesting and measurable behaviors. ZZ will be varied and their effect on the model will be examined.
+In total, the input parameters for the model are width, height and connectivity for the city and mean velocity, velocity deviation, target acceleration, target distance, number of random cars and drive in rate for the cars. The parameters YY will be kept constant at values that produces a basis for interesting and measurable behaviors. ZZ will be varied and their effect on the model will be examined.
 
 \section{ODE description of car velocity}
 The most important factor for the acceleration of a car is the relative speed between the leading and
-the following car. This leads to the following ordinary differential equation for the acceleration of a car following a leading car \acitepos{gazis}:
-\[ \frac{d^2 x_{n+1}(t + T)}{dt^2} = \lambda \left[ \frac{dx_n(t)}{dt} - \frac{dx_{n+1}(t)}{dt} \right] \]
+the following car. This leads to the following ordinary differential equation for the acceleration of a car following a leading car \cite{gazis}:
+\begin{equation}
+\label{ode}
+\frac{d^2 x_{n+1}(t + T)}{dt^2} = \lambda \left[ \frac{dx_n(t)}{dt} - \frac{dx_{n+1}(t)}{dt} \right] 
+\end{equation}
 where n denotes the number corresponding to the lead car, $n+1$ that of the
 following car, T is the reaction time lag, and $\lambda$ is a coefficient of
 proportionality of the driver reaction to the stimulus. $\lambda$ is known
@@ -109,7 +112,104 @@ update their acceleration.
 
 A car which does not have second car in front of it which is sufficiently
 close for the first car to be considered as following the second, the first car will not
-use equation REF TO EQN ABOVE. Instead, it will use a constant acceleration.
+use equation \ref{ode}. Instead, it will use a constant acceleration.
+
+If we simplify \ref{ode} by letting $\frac{dx_n(t)}{dt}=c$, $c$ constant, and
+$T=0$ we get an ODE which is easy to solve analytically.
+$$
+\frac{d^2 x(t)}{dt^2} = \lambda \left[ c - \frac{dx(t)}{dt} \right] 
+$$
+Here, we could safely drop the indices on $x$ since the equation now only
+involves one car. The equation can be written as a system of first order
+equations:
+\begin{eqnarray*}
+\frac{dx_1}{dt} &=& x_2 \\
+\frac{dx_2}{dt} &=& \lambda c - \lambda x_2
+\end{eqnarray*}
+The second equation can be solved using its integrating factor and thereafter
+the first equation is trivial to solve.
+\begin{eqnarray*}
+&\frac{dx_2}{dt} + \lambda x_2 = \lambda c \\
+&e^{t\lambda}\frac{dx_2}{dt}+e^{t\lambda}\lambda x_2 = e^{t\lambda}\lambda c \\
+&\frac{d\left(e^{t\lambda}x_2\right)}{dt} = e^{t\lambda}\lambda c \\
+&e^{t\lambda}x_2 = e^{t\lambda}c + A \\
+&x_2 = c + e^{-t\lambda}A \\
+\end{eqnarray*}
+\begin{eqnarray*}
+&\frac{dx_1}{dt}=x_2 \\
+&x_1 = \int x_2 dt + B \\
+&x_1 = ct - \frac{e^{-t\lambda}}{\lambda}A + B
+\end{eqnarray*}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=400pt]{phase1-0}
+\caption{Phase portrait for simplified ODE.}
+\label{phase1-0}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=400pt]{phase1-1}
+\caption{Phase portrait for simplified ODE.}
+\label{phase1-1}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=400pt]{phase5-1}
+\caption{Phase portrait for simplified ODE.}
+\label{phase5-1}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=400pt]{phase1-3}
+\caption{Phase portrait for simplified ODE.}
+\label{phase1-3}
+\end{figure}
+
+Phase portraits for the simplified version of equation \ref{ode} were constructed and are
+presented in figures \ref{phase1-0}, \ref{phase1-1}, \ref{phase5-1} and
+\ref{phase1-3}. For
+$c=0$, all points on the horizontal line $x_2=0$ are unstable fixed points. For
+$c \neq 0$ there are no fixed points. A higher $\lambda$ makes the speed
+approach $c$ faster. As can be seen when comparing figures \ref{phase1-1} and
+\ref{phase1-3}, cars aproach a lower speed faster than a higher speed.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=400pt]{phasedelay1-2-05}
+\caption{Phase portrait for ODE, numerically computed.}
+\label{phasedelay1-2-05}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=400pt]{phasedelay1-2-07}
+\caption{Phase portrait for ODE, numerically computed.}
+\label{phasedelay1-2-07}
+\end{figure}
+
+It is possible to make a numerical investigation the ODE with a time delay.
+Equation \ref{ode} can be written as a system of first order equation
+\begin{eqnarray*}
+\frac{dx_1(t)}{dt} &=& x_2(t) \\
+\frac{dx_2(t)}{dt} &=& \lambda \left( c - x_2(t-T) \right)
+\end{eqnarray*}
+with the discrete counterpart
+\begin{eqnarray*}
+\Delta x_1 &=& \Delta t x_2 \\
+\Delta x_2 &=& \lambda \Delta t ( c - x_{2,T})
+\end{eqnarray*}
+where $x_{2,T}$ is the value of $x_2$ approximately $T$ time units back.
+
+The trajectories were calculated numerically, and are presented in figures
+\ref{phasedelay1-2-05} and \ref{phasedelay1-2-07}. We can see how the speed of
+the car overshoots the target speed because of the time delay. MATLAB code for
+the numerical computation is presented last in this paper. When letting $T=0$
+the phase portraits are identical to the analytical solution of the simplified
+ODE, which validates our calculations.
 
 \subsection{Gap acceptance}
 In the real world, a driver sitting in a queue usually does not start moving his car as
@@ -132,6 +232,70 @@ and $3.3~\mbox{sec}$, respectively.
 %\section{Modelling traffic flow as a fluid}
 
 \section{How parameters affect throughput}
+
+\section{MATLAB code}
+\subsection{Plot of analytical solution of simplified ODE}
+\begin{verbatim}
+t = linspace(0,10,1000);
+c = 3;
+lambda = 1;
+figure(1);
+clf;
+axis([0 10 0 10]);
+hold on;
+xlabel('x_1 position');
+ylabel('x_2 velocity');
+title(sprintf('Car following phase portrait, \\lambda=%.2f c=%.2f',lambda,c));
+starts = [0 10; 1 10; 2 10; 3 10; 4 10; 5 10; 6 10; 7 10; 8 10; 9 10;...
+    0 0; 1 0; 2 0; 3 0; 4 0; 5 0; 6 0; 7 0; 8 0; 9 0;...
+    0 1; 0 2; 0 3; 0 4; 0 5; 0 6; 0 7; 0 8; 0 9];
+for i = 1:29
+    x1_0 = starts(i,1);
+    x2_0 = starts(i,2);
+    B = x2_0 - c;
+    A = x1_0 + B/lambda;
+    x1 = c*t - exp(-lambda*t)*B/lambda + A;
+    x2 = c + exp(-lambda*t)*B;
+    plot(x1,x2);
+end
+
+\end{verbatim}
+
+\subsection{Numerical computation of phase portrait for ODE with delay}
+\begin{verbatim}
+c = 2;
+lambda = 1;
+T = 0.5;
+
+figure(1);
+clf;
+axis([0 10 0 5]);
+hold on;
+xlabel('x_1 position');
+ylabel('x_2 velocity');
+title(sprintf('Car following phase portrait, \\lambda=%.2f c=%.2f T=%.2f',lambda,c,T));
+
+starts = [2 10; 4 10; 6 10; 8 10;...
+    0 0; 2 0; 4 0; 6 0; 8 0;...
+    0 1; 0 3; 0 5; 0 7; 0 9];
+
+for i = 1:29
+    ts = linspace(0,10,1000);
+    dt = diff(ts); dt = dt(1);
+    x1 = starts(i,1);
+    x2 = starts(i,2);
+    x1s = [x1];
+    x2s = [x2];
+    for t = ts
+        old_x2 = x2s(end-min(round(T/dt), numel(x2s)-1));
+        x2 = x2 + lambda * dt * (c - old_x2);
+        x1 = x1 + dt * x2;
+        x1s = [x1s x1];
+        x2s = [x2s x2];
+    end
+    plot(x1s, x2s);
+end
+\end{verbatim}
 
 \begin{thebibliography}{99}
 \bibitem{haight} Frank A. Haight
