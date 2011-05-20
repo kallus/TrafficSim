@@ -123,7 +123,10 @@ class Car
       @speed = 0
     end
 
-    @speed = @target_speed if @speed > @target_speed
+    if @speed > @target_speed
+      @speed = @target_speed
+      @acceleration = 0
+    end
 
     new_distance = @distance + speed * time
     if new_distance > current_path.length and try_lock_paths! next_path then
@@ -312,19 +315,6 @@ class Car
     else
       return (nc.distance - Car.length + (current_path.length - @distance))
     end
-
-    # inf = -1   # ugly hack
-    # cars_on_this_path = current_path.cars
-    # if cars_on_this_path.last == self  # no cars in front, on this tile
-    #   return inf unless next_path
-    #   cars_on_next_path = next_path.cars
-    #   return inf unless cars_on_next_path
-    #   return inf unless cars_on_next_path.first
-    #   return (cars_on_next_path[index_of_this_car+1].distance - Car.length + (current_path.length - @distance))
-    # else
-    #   index_of_this_car = cars_on_this_path.index(self)
-    #   return (cars_on_this_path[index_of_this_car+1].distance - Car.length - @distance)
-    # end
   end
 
   def distance_to_next_obstruction
