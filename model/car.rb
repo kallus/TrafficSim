@@ -50,7 +50,7 @@ class Car
 
     @target_speed = 8 + 2 * rand
     @max_acceleration = 1
-    @target_distance = Car.length/2.0
+    @target_distance = Car.length*0.5 # (2.0/3.0)
 #    @target_distance = Car.length  # used to be 30
 
     try_lock_paths! path
@@ -82,6 +82,7 @@ class Car
     dtno = distance_to_next_obstruction
     dtnc = distance_to_next_car
     lambda = 0.22
+    delta = 0.005
     following_distance = Car.length*5
 
     if dtno < 0 or dtno > following_distance
@@ -94,7 +95,7 @@ class Car
         return unless gap_accepted?(dtnc)
       end
       nc = next_car
-      @acceleration = lambda*(nc.speed_history.first - speed_history.first) + 0.01*(dtno-@target_distance)
+      @acceleration = lambda*(nc.speed_history.first - speed_history.first) + delta*(dtno-@target_distance)
     else  # any other obstacle has speed zero
 #      diff = @target_distance - dtno
 #      @acceleration = (diff/@target_distance*4) ** 2 * -@max_acceleration - @max_acceleration
@@ -103,7 +104,7 @@ class Car
         @speed = 0
         return unless gap_accepted?(dtno)
       end
-      @acceleration = lambda*(0 - speed_history.first) + 0.005*(dtno-@target_distance)
+      @acceleration = lambda*(0 - speed_history.first) + delta*(dtno-@target_distance)
     end
   end
 

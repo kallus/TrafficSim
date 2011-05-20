@@ -118,7 +118,7 @@ class Vector
     end
 
     def car!(canvas, car, car_graphics)
-#        c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.5).text(0,0, "%d (%.1f m/s, %.1f m/s^2, %d %.1f m)" % [car.number, car.speed, car.acceleration, car.next_car_number, car.distance_to_next_obstruction])
+#        canvas.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.3).text(0,0, "%d (%.1f m/s, %.1f m/s^2, %d %.1f m)" % [car.number, car.speed, car.acceleration, car.next_car_number, car.distance_to_next_obstruction])
       canvas.use(car_graphics).translate(*car.pos).rotate(car.angle)
     end
 
