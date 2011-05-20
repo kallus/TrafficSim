@@ -218,10 +218,14 @@ between the cars before he considers it worth driving forwards a small distance.
 This is modelled using a gap acceptance function $\alpha(G)$:
 \[ \alpha(G) = 0, G < T\\
 \alpha(G) = 1 - \exp{-\lambda(G - T)} \]
-where $G$ is the gap distance and $T$ is reaction time of the driver.  % XXX make sure this is what T is
+where $G$ is the gap distance and $T$ is the minimum gap that will be accepted.
 $\alpha(G)$ is the \emph{probability} that the driver will move when there is a gap $G$
-to the next car. Experiments have shown that the values of $\lambda$ and $T$ are $2.7~\mbox{sec}^{-1}$
-and $3.3~\mbox{sec}$, respectively.
+to the next car. We use a minimum gap set to the length of one car in our simulation.
+
+To prevent cars from stopping unreasonably far from a stopped target (either a car or a
+locked crossing), a small term \[ \delta (D - W) \] is added to the acceleration,
+where $D$ is the distance to the next obstacle and $W$ is the wanted distance to the next target.
+Our simulation is using $\delta = 0.005$ and $W$ set to half of the length of a car.
 
 \subsection{Stability}
 \subsection{Phase portrait}
