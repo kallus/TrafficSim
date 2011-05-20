@@ -51,14 +51,76 @@ class Vector
           _cg.use(car_body)
         end
 
+        random_car_body = RVG::Group.new do |_car_body|
+          _car_body.styles(:fill => 'red', :stroke => 'red', :stroke_width => 0.1)
+          _car_body.rect(Car.length, width, -Car.length, -width/2)
+        end
+
+        random_car_graphics = RVG::Group.new do |_cg|
+          _cg.use(wheels)
+          _cg.use(random_car_body)
+        end
+
         cars.each do |car|
-          car!(c, car, car_graphics) unless car.dead
+          unless car.dead
+            if car.rand_car?
+              car!(c, car, random_car_graphics)
+            else
+              car!(c, car, car_graphics)
+            end
+          end
         end
       end
 
       frame_rvg.draw.write("output/#{("%06.2f" % [time]).sub(".", "")}.gif")
     end
- 
+
+    @@hlines = RVG::Group.new do |s|
+      s.styles(:stroke => 'black', :stroke_width => 0.2)
+      s.line(0, 35+Car.width, Tile.width, 35+Car.width)
+      s.line(0, 25-Car.width, Tile.width, 25-Car.width)
+    end
+    @@separating_line = RVG::Group.new do |s|
+      s.styles(:stroke => 'black', :fill => 'none', :stroke_dasharray => [2, 4], :stroke_width => 0.2)
+      s.line(0, 30, Tile.width, 30)
+    end
+    @@straight_tile = RVG::Group.new do |s|
+      s.use(@@hlines)
+      s.use(@@separating_line)
+    end
+
+    @@tcross_lines = RVG::Group.new do |s|
+      s.styles(:stroke => 'black', :stroke_width => 0.2)
+      s.line(0, 25-Car.width, Tile.width, 25-Car.width)
+
+      s.line(0, 35+Car.width, Tile.width/2 - 10, 35+Car.width)
+      s.line(Tile.width/2 - 10, 35+Car.width, Tile.width/2 - 10, Tile.height)
+
+      s.line(Tile.width/2 + 10, 35+Car.width, Tile.width, 35+Car.width)
+      s.line(Tile.width/2 + 10, 35+Car.width, Tile.width/2 + 10, Tile.height)
+    end
+    @@tcross_tile = RVG::Group.new do |s|
+      s.use(@@tcross_lines)
+    end
+
+    @@turn_lines = RVG::Group.new do |s|
+      s.styles(:stroke => 'black', :stroke_width => 0.2)
+      s.line(0, Tile.width/2 + 10, Tile.width/2 + 10, Tile.width/2 + 10)
+      s.line(Tile.width/2 + 10, Tile.width/2 + 10, Tile.width/2 + 10, 0)
+
+      s.line(0, Tile.width/2 - 10, Tile.width/2 - 10, Tile.width/2 - 10)
+      s.line(Tile.width/2 - 10, Tile.width/2 - 10, Tile.width/2 - 10, 0)
+    end
+    @@turn_separating_line = RVG::Group.new do |s|
+      s.styles(:stroke => 'black', :fill => 'none', :stroke_dasharray => [2, 4], :stroke_width => 0.2)
+      s.line(0, 30, Tile.width/2, 30)
+      s.line(Tile.width/2, 0, Tile.width/2, 30)
+    end
+    @@turn_tile = RVG::Group.new do |s|
+      s.use(@@turn_lines)
+      s.use(@@turn_separating_line)
+    end
+    
     def tile!(canvas, tile, x, y)
       canvas.g.translate(x, y) do |solid|
 #        if $debug == true and tile.all_paths != nil
@@ -71,38 +133,46 @@ class Vector
 #          end
 #        end
 
-        #solid.styles(:stroke=>'black', :stroke_width=>0.2)
+        solid.styles(:stroke=>'black', :stroke_width=>0.2)
         case tile
           when HorizontalTile
-            solid.line(0, 35, Tile.width, 35)
-            solid.line(0, 25, Tile.width, 25)
+            solid.use(@@straight_tile)
           when VerticalTile
-            solid.line(25, 0, 25, Tile.height)
-            solid.line(35, 0, 35, Tile.height)
+            solid.use(@@straight_tile).rotate(90).translate(*[0, -Tile.width])
+#            solid.line(25, 0, 25, Tile.height)
+#            solid.line(35, 0, 35, Tile.height)
           when TurnSwTile
-            path!(solid, tile.paths([0,25]).first)
-            path!(solid, tile.paths([35,0]).first)
+            solid.use(@@turn_tile)
+#            path!(solid, tile.paths([0,25]).first)
+#            path!(solid, tile.paths([35,0]).first)
           when TurnNeTile
-            path!(solid, tile.paths([Tile.width,35]).first)
-            path!(solid, tile.paths([25,Tile.height]).first)
+            solid.use(@@turn_tile).rotate(180).translate(*[-Tile.width, -Tile.height])
+#            path!(solid, tile.paths([Tile.width,35]).first)
+#            path!(solid, tile.paths([25,Tile.height]).first)
           when TurnNwTile
-            path!(solid, tile.paths([0,25]).first)
-            path!(solid, tile.paths([25,Tile.height]).first)
+            solid.use(@@turn_tile).rotate(-90).translate(*[-Tile.width, 0])
+#            path!(solid, tile.paths([0,25]).first)
+#            path!(solid, tile.paths([25,Tile.height]).first)
           when TurnSeTile
-            path!(solid, tile.paths([Tile.width,35]).first)
-            path!(solid, tile.paths([35,0]).first)
+            solid.use(@@turn_tile).rotate(90).translate(*[0, -Tile.width])
+#            path!(solid, tile.paths([Tile.width,35]).first)
+#            path!(solid, tile.paths([35,0]).first)
           when TcrossNTile
-            paths = tile.paths([0,25]) + tile.paths([35,0]) + tile.paths([Tile.width,35])
-            paths.each { |p| path!(solid,p)}
+            solid.use(@@tcross_tile).rotate(180).translate(*[-Tile.width, -Tile.height])
+#            paths = tile.paths([0,25]) + tile.paths([35,0]) + tile.paths([Tile.width,35])
+#            paths.each { |p| path!(solid,p)}
           when TcrossSTile
-            paths = tile.paths([0,25]) + tile.paths([25,Tile.height]) + tile.paths([Tile.width,35])
-            paths.each { |p| path!(solid,p)}
+            solid.use(@@tcross_tile)
+#            paths = tile.paths([0,25]) + tile.paths([25,Tile.height]) + tile.paths([Tile.width,35])
+#            paths.each { |p| path!(solid,p)}
           when TcrossETile
-            paths = tile.paths([0,25]) + tile.paths([25,Tile.height]) + tile.paths([35,0])
-            paths.each { |p| path!(solid,p)}
+            solid.use(@@tcross_tile).rotate(90).translate(*[0, -Tile.width])
+#            paths = tile.paths([0,25]) + tile.paths([25,Tile.height]) + tile.paths([35,0])
+#            paths.each { |p| path!(solid,p)}
           when TcrossWTile
-            paths = tile.paths([Tile.width,35]) + tile.paths([25,Tile.height]) + tile.paths([35,0])
-            paths.each { |p| path!(solid,p)}
+            solid.use(@@tcross_tile).rotate(-90).translate(*[-Tile.width, 0])
+#            paths = tile.paths([Tile.width,35]) + tile.paths([25,Tile.height]) + tile.paths([35,0])
+#            paths.each { |p| path!(solid,p)}
           when CrossTile
             paths = []
             paths += tile.paths([Tile.width,35]) # from east
@@ -118,8 +188,13 @@ class Vector
     end
 
     def car!(canvas, car, car_graphics)
-#        canvas.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.3).text(0,0, "%d (%.1f m/s, %.1f m/s^2, %d %.1f m)" % [car.number, car.speed, car.acceleration, car.next_car_number, car.distance_to_next_obstruction])
-      canvas.use(car_graphics).translate(*car.pos).rotate(car.angle)
+#      text_group = RVG::Group.new do |s|
+#        s.translate(*[car.pos[0], car.pos[1]+3]).matrix(1,0,0,-1,0,0).scale(0.3).text(0,0, "%d (%.1f m/s, %.1f m/s^2, %d %.1f m)" % [car.number, car.speed, car.acceleration, car.next_car_number, car.distance_to_next_obstruction])
+#      end
+      canvas.g do |s|
+#        s.use(text_group)
+        s.use(car_graphics).translate(*car.pos).rotate(car.angle)
+      end
     end
 
     def path!(solid, path)
