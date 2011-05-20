@@ -46,6 +46,7 @@ class Model
   end
   
   def init_town(width, height, connectivity, rand_cars)
+    srand(33)
     @tile_grid = MapGenerator.new_map(width, height, connectivity)
     width = @tile_grid.first.length
     height = @tile_grid.length
@@ -58,13 +59,15 @@ class Model
     se = TcrossSTile.new
     @tile_grid.first[width-1] = se
     
+    srand(Time.now.to_i)
+
     used_tiles = []
-    0..rand_cars.times do
+    rand_cars.times do
       while true
         x = rand(width)
         y = rand(height)
         start = @tile_grid[y][x].start_pos
-        if start != nil and not used_tiles.include?(start)
+        if start != nil and not used_tiles.include?(start) and (@tile_grid[y][x].kind_of?(VerticalTile) or @tile_grid[y][x].kind_of?(HorizontalTile))
           used_tiles << start
           break
         end

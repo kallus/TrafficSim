@@ -61,6 +61,10 @@ class Car
     @targets.empty?
   end
 
+  def dead?
+    @dead
+  end
+
   def pos
     pos = current_path.point(@distance)
     local_to_global(pos)
