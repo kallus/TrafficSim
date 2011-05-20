@@ -1,7 +1,7 @@
 require "trafficsim"
 require "view/vector"
 
-settings = {:step => 0.1, :end => 300, :skip_steps => 20}
+settings = {:step => 0.1, :end => 340, :skip_steps => 20}
 
 $debug = true
 
