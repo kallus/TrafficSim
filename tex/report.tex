@@ -204,11 +204,12 @@ with the discrete counterpart
 \end{eqnarray*}
 where $x_{2,T}$ is the value of $x_2$ approximately $T$ time units back.
 
-
 The trajectories were calculated numerically, and are presented in figures
 \ref{phasedelay1-2-05} and \ref{phasedelay1-2-07}. We can see how the speed of
 the car overshoots the target speed because of the time delay. MATLAB code for
-the numerical computation is presented last in this paper.
+the numerical computation is presented last in this paper. When letting $T=0$
+the phase portraits are identical to the analytical solution of the simplified
+ODE, which validates our calculations.
 
 \subsection{Gap acceptance}
 \subsection{Stability}
@@ -221,7 +222,35 @@ the numerical computation is presented last in this paper.
 
 \section{How parameters affect throughput}
 
-\section{Numerical computation of phase portrait for ODE with delay}
+\section{MATLAB code}
+\subsection{Plot of analytical solution of simplified ODE}
+\begin{verbatim}
+t = linspace(0,10,1000);
+c = 3;
+lambda = 1;
+figure(1);
+clf;
+axis([0 10 0 10]);
+hold on;
+xlabel('x_1 position');
+ylabel('x_2 velocity');
+title(sprintf('Car following phase portrait, \\lambda=%.2f c=%.2f',lambda,c));
+starts = [0 10; 1 10; 2 10; 3 10; 4 10; 5 10; 6 10; 7 10; 8 10; 9 10;...
+    0 0; 1 0; 2 0; 3 0; 4 0; 5 0; 6 0; 7 0; 8 0; 9 0;...
+    0 1; 0 2; 0 3; 0 4; 0 5; 0 6; 0 7; 0 8; 0 9];
+for i = 1:29
+    x1_0 = starts(i,1);
+    x2_0 = starts(i,2);
+    B = x2_0 - c;
+    A = x1_0 + B/lambda;
+    x1 = c*t - exp(-lambda*t)*B/lambda + A;
+    x2 = c + exp(-lambda*t)*B;
+    plot(x1,x2);
+end
+
+\end{verbatim}
+
+\subsection{Numerical computation of phase portrait for ODE with delay}
 \begin{verbatim}
 c = 2;
 lambda = 1;
@@ -242,7 +271,6 @@ starts = [2 10; 4 10; 6 10; 8 10;...
 for i = 1:29
     ts = linspace(0,10,1000);
     dt = diff(ts); dt = dt(1);
-    %[x1, x2] = ginput(1);
     x1 = starts(i,1);
     x2 = starts(i,2);
     x1s = [x1];

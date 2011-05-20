@@ -4,7 +4,7 @@ T = 0.5;
 
 figure(1);
 clf;
-axis([0 10 0 5]);
+axis([0 10 0 10]);
 hold on;
 xlabel('x_1 position');
 ylabel('x_2 velocity');
@@ -14,7 +14,7 @@ starts = [2 10; 4 10; 6 10; 8 10;...
     0 0; 2 0; 4 0; 6 0; 8 0;...
     0 1; 0 3; 0 5; 0 7; 0 9];
 
-for i = 1:29
+for i = 1:14
     ts = linspace(0,10,1000);
     dt = diff(ts); dt = dt(1);
     %[x1, x2] = ginput(1);
