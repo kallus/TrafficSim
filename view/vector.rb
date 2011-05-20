@@ -111,8 +111,14 @@ class Vector
       s.line(0, Tile.width/2 - 10, Tile.width/2 - 10, Tile.width/2 - 10)
       s.line(Tile.width/2 - 10, Tile.width/2 - 10, Tile.width/2 - 10, 0)
     end
+    @@turn_separating_line = RVG::Group.new do |s|
+      s.styles(:stroke => 'black', :fill => 'none', :stroke_dasharray => [2, 4], :stroke_width => 0.2)
+      s.line(0, 30, Tile.width/2, 30)
+      s.line(Tile.width/2, 0, Tile.width/2, 30)
+    end
     @@turn_tile = RVG::Group.new do |s|
       s.use(@@turn_lines)
+      s.use(@@turn_separating_line)
     end
     
     def tile!(canvas, tile, x, y)
@@ -182,11 +188,11 @@ class Vector
     end
 
     def car!(canvas, car, car_graphics)
-      text_group = RVG::Group.new do |s|
-        s.translate(*[car.pos[0], car.pos[1]+3]).matrix(1,0,0,-1,0,0).scale(0.3).text(0,0, "%d (%.1f m/s, %.1f m/s^2, %d %.1f m)" % [car.number, car.speed, car.acceleration, car.next_car_number, car.distance_to_next_obstruction])
-      end
+#      text_group = RVG::Group.new do |s|
+#        s.translate(*[car.pos[0], car.pos[1]+3]).matrix(1,0,0,-1,0,0).scale(0.3).text(0,0, "%d (%.1f m/s, %.1f m/s^2, %d %.1f m)" % [car.number, car.speed, car.acceleration, car.next_car_number, car.distance_to_next_obstruction])
+#      end
       canvas.g do |s|
-        s.use(text_group)
+#        s.use(text_group)
         s.use(car_graphics).translate(*car.pos).rotate(car.angle)
       end
     end
