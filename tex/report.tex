@@ -191,7 +191,7 @@ approach $c$ faster. As can be seen when comparing figures \ref{phase1-1} and
 \label{phasedelay1-2-07}
 \end{figure}
 
-It is possible to make a numerical investigation the ODE with a time delay.
+It is possible to make a numerical investigation of the ODE with a time delay.
 Equation \ref{ode} can be written as a system of first order equation
 \begin{eqnarray*}
 \frac{dx_1(t)}{dt} &=& x_2(t) \\
@@ -234,9 +234,12 @@ axis([0 10 0 10]);
 hold on;
 xlabel('x_1 position');
 ylabel('x_2 velocity');
-title(sprintf('Car following phase portrait, \\lambda=%.2f c=%.2f',lambda,c));
-starts = [0 10; 1 10; 2 10; 3 10; 4 10; 5 10; 6 10; 7 10; 8 10; 9 10;...
-    0 0; 1 0; 2 0; 3 0; 4 0; 5 0; 6 0; 7 0; 8 0; 9 0;...
+title(sprintf('Car following phase portrait,
+  \\lambda=%.2f c=%.2f',lambda,c));
+starts = [0 10; 1 10; 2 10; 3 10; 4 10; 5 10;...
+    6 10; 7 10; 8 10; 9 10;...
+    0 0; 1 0; 2 0; 3 0; 4 0; 5 0; 6 0; 7 0;...
+    8 0; 9 0;...
     0 1; 0 2; 0 3; 0 4; 0 5; 0 6; 0 7; 0 8; 0 9];
 for i = 1:29
     x1_0 = starts(i,1);
@@ -262,7 +265,8 @@ axis([0 10 0 5]);
 hold on;
 xlabel('x_1 position');
 ylabel('x_2 velocity');
-title(sprintf('Car following phase portrait, \\lambda=%.2f c=%.2f T=%.2f',lambda,c,T));
+title(sprintf('Car following phase portrait,
+  \\lambda=%.2f c=%.2f T=%.2f',lambda,c,T));
 
 starts = [2 10; 4 10; 6 10; 8 10;...
     0 0; 2 0; 4 0; 6 0; 8 0;...

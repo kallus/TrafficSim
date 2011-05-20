@@ -45,7 +45,7 @@ class Model
     end
   end
   
-  def init_town(width, height, connectivity)
+  def init_town(width, height, connectivity, rand_cars)
     @tile_grid = MapGenerator.new_map(width, height, connectivity)
     width = @tile_grid.first.length
     height = @tile_grid.length
@@ -57,9 +57,24 @@ class Model
     @tile_grid.first[0] = sw
     se = TcrossSTile.new
     @tile_grid.first[width-1] = se
+    
+    used_tiles = []
+    0..rand_cars.times do
+      while true
+        x = rand(width)
+        y = rand(height)
+        start = @tile_grid[y][x].start_pos
+        if start != nil and not used_tiles.include?(start)
+          used_tiles << start
+          break
+        end
+      end
+      @cars << Car.new(start[:path], start[:distance], [x,y], self, [])
+    end
 
     cars_per_second = 0.1
     number_of_cars = 7
+    #number_of_cars = 10
     @car_creators << CarCreator.new(@cars, self, [0, height-1], nw.paths([0, 25]), cars_per_second, number_of_cars)
     @car_creators << CarCreator.new(@cars, self, [width-1, height-1], ne.paths([Tile.width, 35]), cars_per_second, number_of_cars)
     @car_creators << CarCreator.new(@cars, self, [0, 0], sw.paths([0, 25]), cars_per_second, number_of_cars)

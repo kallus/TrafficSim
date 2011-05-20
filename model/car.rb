@@ -57,6 +57,10 @@ class Car
     path.add_car!(self)
   end
 
+  def rand_car?
+    @targets.empty?
+  end
+
   def pos
     pos = current_path.point(@distance)
     local_to_global(pos)
@@ -237,7 +241,15 @@ class Car
       return false
     end
 
-    @next_path = paths[rand(paths.length)]
+    # dont let random cars drive out of map
+    while true
+      @next_path = paths[rand(paths.length)]
+      next_next_grid_pos = [n[0] + @next_path.end_direction[0], n[1] + @next_path.end_direction[1]]
+      nn = next_next_grid_pos
+      unless nn[0] >= @grid_size[0] || nn[1] >= @grid_size[1] || nn[0] < 0 || nn[1] < 0 then
+        break
+      end
+    end
     return @next_path
   end
 
