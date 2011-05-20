@@ -16,7 +16,7 @@ model.init_town(10,8, 0.4)
 model.init_graph
 
 # create a high res map with path numbers
-RVG::dpi = 144/2
+RVG::dpi = 144/3
 t = model.time
 model.time = -1
 Vector.draw!(model.cars, model.tile_grid, model.time)
