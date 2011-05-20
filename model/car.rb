@@ -1,11 +1,11 @@
 class Car
-  attr :angle
   attr :current_path
   attr :grid_pos
   attr :dead
   attr :speed
   attr :speed_history
   attr :lifetime
+  attr :acceleration
   attr_reader :distance
   attr_reader :number
   attr_reader :nhist
@@ -19,7 +19,6 @@ class Car
 
     @lifetime = 0.0
     @dead = false
-    @angle = 0
     @current_path = path
     @next_path = nil
     @distance = distance
@@ -51,7 +50,8 @@ class Car
 
     @target_speed = 8 + 2 * rand
     @max_acceleration = 1
-    @target_distance = 30
+    @target_distance = Car.length/2.0
+#    @target_distance = Car.length  # used to be 30
 
     try_lock_paths! path
     path.add_car!(self)
@@ -67,33 +67,43 @@ class Car
     @speed_history << @speed
   end
 
-  def update_acceleration2!
-    dtno = distance_to_next_obstruction
-    dtnc = distance_to_next_car
-    lambda = 0.22
-    following_distance = Car.length*5
-
-    if dtno > following_distance
-      @acceleration = @max_acceleration
-    elsif (dtnc >= 0 and dtnc <= dtno)  # next obstacle is a car
-      nc = next_car
-      @acceleration = lambda*(nc.speed_history.first - speed_history.first)
-    else  # any other obstacle has speed zero
-      @acceleration = lambda*(0 - speed_history.first)
+  def gap_accepted?(g)
+    p = rand()
+    lambda = 2.7
+    t = Car.length  # 3.3
+    if g < t
+      return false
+    else
+      return rand() <= (1 - Math.exp(1)**(-lambda * (g - t)))
     end
   end
 
   def update_acceleration!
     dtno = distance_to_next_obstruction
-    if dtno < @target_distance
-      diff = @target_distance - dtno
-      @acceleration = (diff/@target_distance*4) ** 2 * -@max_acceleration - @max_acceleration
-    elsif speed < @target_speed
+    dtnc = distance_to_next_car
+    lambda = 0.22
+    following_distance = Car.length*5
+
+    if dtno < 0 or dtno > following_distance
       @acceleration = @max_acceleration
-    elsif speed > @target_speed
-      @acceleration = -@max_acceleration
-    else
-      @acceleration = 0
+    elsif (dtnc >= 0 and dtnc <= dtno)  # next obstacle is a car
+      if @acceleration < 0.05 and @speed < 0.1
+        # we're stopped. start moving only if gap is accepted
+        @acceleration = 0
+        @speed = 0
+        return unless gap_accepted?(dtnc)
+      end
+      nc = next_car
+      @acceleration = lambda*(nc.speed_history.first - speed_history.first) + 0.01*(dtno-@target_distance)
+    else  # any other obstacle has speed zero
+#      diff = @target_distance - dtno
+#      @acceleration = (diff/@target_distance*4) ** 2 * -@max_acceleration - @max_acceleration
+      if @acceleration < 0.05 and @speed < 0.1
+        @acceleration = 0
+        @speed = 0
+        return unless gap_accepted?(dtno)
+      end
+      @acceleration = lambda*(0 - speed_history.first) + 0.005*(dtno-@target_distance)
     end
   end
 
@@ -101,7 +111,7 @@ class Car
     @lifetime += time
 
     update_speed_history!
-    update_acceleration2!
+    update_acceleration!
     @speed += @acceleration * time
     if speed < 0
       #puts "#{@number} stopped from going backwards"
@@ -178,6 +188,32 @@ class Car
       end
     end
     return true
+  end
+
+  def angle
+    a = 0
+    arg = (pos[0] - tail[0]).abs/Car.length
+    arg = 1.0 if arg > 1.0
+    arg = -1.0 if arg < -1.0
+
+    if pos[0] >= tail[0]
+      if pos[1] >= tail[1]
+        # front is first quadrant
+        a = Math.acos(arg)
+      else
+        # front is fourth quadrant
+        a = -Math.acos(arg)
+      end
+    else
+      if pos[1] >= tail[1]
+        # front is in second quadrant
+        a = Math::PI - Math.acos(arg)
+      else
+        # front is in third quadrant
+        a = -(Math::PI - Math.acos(arg))
+      end
+    end
+    return a*(180.0/Math::PI)
   end
 
   def tail
@@ -261,7 +297,7 @@ class Car
     if nc.current_path == current_path
       return (nc.distance - Car.length - @distance)
     else
-      return (nc.distance - Car.length - (current_path.length - @distance))
+      return (nc.distance - Car.length + (current_path.length - @distance))
     end
 
     # inf = -1   # ugly hack
@@ -279,7 +315,7 @@ class Car
   end
 
   def distance_to_next_obstruction
-    inf = 1000  # should come up with something better
+    inf = -1  # should come up with something better
 
     cars_on_this_path = current_path.cars
     if cars_on_this_path.last == self # no cars in front, on this tile
