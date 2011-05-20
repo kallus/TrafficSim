@@ -90,7 +90,13 @@ to spend time on finding a faster implementation of Dijkstra's path finding
 algorithm.
 
 \subsection{Parameters}
-In total, the input parameters for the model are width, height and connectivity for the city and mean velocity, velocity deviation, target acceleration, target distance, number of random cars and drive in rate for the cars. The parameters YY will be kept constant at values that produces a basis for interesting and measurable behaviors. ZZ will be varied and their effect on the model will be examined.
+In total, the input parameters for the model are width, height and connectivity
+for the city and mean velocity, velocity deviation, target acceleration, target
+distance, number of random cars and drive in rate for the cars. The number of
+random cars will be varied and its effect on the model will be
+examined. All other parameters
+will be kept constant at values that produces a basis for interesting and
+measurable behaviors. 
 
 \section{ODE description of car velocity}
 The most important factor for the acceleration of a car is the relative speed between the leading and
@@ -232,6 +238,50 @@ and $3.3~\mbox{sec}$, respectively.
 %\section{Modelling traffic flow as a fluid}
 
 \section{How parameters affect throughput}
+
+\section{Results}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=400pt]{drivethrough}
+\caption{Experimental data from our model.}
+\label{drivethrough}
+\end{figure}
+
+\begin{table}[htb]
+  \caption{Parameter values used in the experiment.}
+  \label{params}
+  \begin{center}
+  \begin{tabular}{l | r}
+  Parameter & Value \\
+  \hline
+  City width & 20 road tiles ($1200 m$) \\
+  City height & 15 road tiles ($900 m$) \\
+  City connectivity & 0.4 \\
+  Mean velocity & $10 m/s$ \\
+  Velocity standard deviation & $1 m/s$ \\
+  Target acceleration &$ 1 m/s^2$\\
+  Target distance & $3.5 m$\\
+  Drive in rate & $3.2 \text{cars}/s$ \\
+  Number of random cars & Varied (0-XX) \\
+  \end{tabular}
+  \end{center}
+\end{table}
+
+Figure \ref{drivethrough} shows the behaiviour of our model. The carrying
+capacity of the city is estimated by measuring the average time it takes for car
+to drive through the city. By having different numbers of cars driving around
+randomly within the city, we can estimate how many cars that can be driving in
+the city without resulting in a lot of queueing time. All parameters, except the
+number of random cars, were held constant during the experiment. Their values
+are presented in table \ref{params}. For each change
+in number of random cars, 10 trials were made to decrease the randomness of
+the results. 40 cars, 10 from each corner of the city, were assigned to drive
+through the city with one of the other corners as target. For each trial, the
+average time it took for the 40 drive through cars to reach the target was
+measured as output from the trial.
+
+Perhaps this could be captured by a Lattice-Boltzmann equation.
 
 \section{MATLAB code}
 \subsection{Plot of analytical solution of simplified ODE}
