@@ -51,8 +51,24 @@ class Vector
           _cg.use(car_body)
         end
 
+        random_car_body = RVG::Group.new do |_car_body|
+          _car_body.styles(:fill => 'red', :stroke => 'red', :stroke_width => 0.1)
+          _car_body.rect(Car.length, width, -Car.length, -width/2)
+        end
+
+        random_car_graphics = RVG::Group.new do |_cg|
+          _cg.use(wheels)
+          _cg.use(random_car_body)
+        end
+
         cars.each do |car|
-          car!(c, car, car_graphics) unless car.dead
+          unless car.dead
+            if car.rand_car?
+              car!(c, car, random_car_graphics)
+            else
+              car!(c, car, car_graphics)
+            end
+          end
         end
       end
 
@@ -102,7 +118,13 @@ class Vector
             paths.each { |p| path!(solid,p)}
           when TcrossWTile
             paths = tile.paths([Tile.width,35]) + tile.paths([25,Tile.height]) + tile.paths([35,0])
-            paths.each { |p| path!(solid,p)}
+            path!(solid, paths[0])  # en
+            #path!(solid, paths[1])  # ne
+            #path!(solid, paths[2])  # es
+            path!(solid, paths[3])  # se
+            path!(solid, paths[4])  # ns
+#            path!(solid, paths[5])  # sn
+#            paths.each { |p| path!(solid,p)}
           when CrossTile
             paths = []
             paths += tile.paths([Tile.width,35]) # from east
