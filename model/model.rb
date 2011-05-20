@@ -72,9 +72,8 @@ class Model
       @cars << Car.new(start[:path], start[:distance], [x,y], self, [])
     end
 
-    cars_per_second = 0.1
-    number_of_cars = 7
-    #number_of_cars = 10
+    cars_per_second = 0.8
+    number_of_cars = 10
     @car_creators << CarCreator.new(@cars, self, [0, height-1], nw.paths([0, 25]), cars_per_second, number_of_cars)
     @car_creators << CarCreator.new(@cars, self, [width-1, height-1], ne.paths([Tile.width, 35]), cars_per_second, number_of_cars)
     @car_creators << CarCreator.new(@cars, self, [0, 0], sw.paths([0, 25]), cars_per_second, number_of_cars)

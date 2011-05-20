@@ -111,7 +111,7 @@ as far back as the time lag requires. A following car can then use this
 update their acceleration.
 
 A car which does not have second car in front of it which is sufficiently
-close for the first car to be considered as following the second will not
+close for the first car to be considered as following the second, the first car will not
 use equation \ref{ode}. Instead, it will use a constant acceleration.
 
 If we simplify \ref{ode} by letting $\frac{dx_n(t)}{dt}=c$, $c$ constant, and
@@ -212,6 +212,17 @@ the phase portraits are identical to the analytical solution of the simplified
 ODE, which validates our calculations.
 
 \subsection{Gap acceptance}
+In the real world, a driver sitting in a queue usually does not start moving his car as
+soon as the car in front starts to move. Instead, he waits until there are a few meters
+between the cars before he considers it worth driving forwards a small distance.
+This is modelled using a gap acceptance function $\alpha(G)$:
+\[ \alpha(G) = 0, G < T\\
+\alpha(G) = 1 - \exp{-\lambda(G - T)} \]
+where $G$ is the gap distance and $T$ is reaction time of the driver.  % XXX make sure this is what T is
+$\alpha(G)$ is the \emph{probability} that the driver will move when there is a gap $G$
+to the next car. Experiments have shown that the values of $\lambda$ and $T$ are $2.7~\mbox{sec}^{-1}$
+and $3.3~\mbox{sec}$, respectively.
+
 \subsection{Stability}
 \subsection{Phase portrait}
 

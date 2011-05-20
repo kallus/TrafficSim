@@ -31,8 +31,28 @@ class Vector
         c.background_image = Magick::Image.read('output/map.gif').first
         c.matrix(1, 0, 0, -1, 0, (grid_size[1]*2.5).in) #changing to cartesian coordinates
         c.g.translate(0,2).matrix(1,0,0,-1,0,0).scale(0.5).text(0, 0, "Time: %.2f sec" % [time])
+
+        width = 2.5
+        wheels = RVG::Group.new do |_wheels|
+          _wheels.styles(:fill => 'black', :stroke => "black", :stroke_width => 0.1)
+          _wheels.rect(1, width/4.0, -(Car.length), width/2.0)  # back, left
+          _wheels.rect(1, width/4.0, -(Car.length), -width/2.0 - width/4.0) # back, right
+          _wheels.rect(1, width/4.0, -2.0, width/2.0)  # front, left
+          _wheels.rect(1, width/4.0, -2.0, -width/2.0 - width/4.0)  #front, right
+        end
+
+        car_body = RVG::Group.new do |_car_body|
+          _car_body.styles(:fill => 'blue', :stroke => 'blue', :stroke_width => 0.1)
+          _car_body.rect(Car.length, width, -Car.length, -width/2)
+        end
+
+        car_graphics = RVG::Group.new do |_cg|
+          _cg.use(wheels)
+          _cg.use(car_body)
+        end
+
         cars.each do |car|
-          car!(c, car) unless car.dead
+          car!(c, car, car_graphics) unless car.dead
         end
       end
 
@@ -41,15 +61,15 @@ class Vector
  
     def tile!(canvas, tile, x, y)
       canvas.g.translate(x, y) do |solid|
-        if $debug == true and tile.all_paths != nil
-          path_nums = tile.all_paths.collect { |p| p.number.to_s }
-          path_groups = []
-          path_nums.each_slice(3) { |g3| path_groups << g3.join(", ") }
-          path_string = path_groups.join(",\n")
-          if path_string.length > 0
-            solid.g.matrix(1,0,0,-1,0,0).translate(0, -20).scale(0.3).text(0, 0, path_string)
-          end
-        end
+#        if $debug == true and tile.all_paths != nil
+#          path_nums = tile.all_paths.collect { |p| p.number.to_s }
+#          path_groups = []
+#          path_nums.each_slice(3) { |g3| path_groups << g3.join(", ") }
+#          path_string = path_groups.join(",\n")
+#          if path_string.length > 0
+#            solid.g.matrix(1,0,0,-1,0,0).translate(0, -20).scale(0.3).text(0, 0, path_string)
+#          end
+#        end
 
         #solid.styles(:stroke=>'black', :stroke_width=>0.2)
         case tile
@@ -97,18 +117,9 @@ class Vector
       end
     end
 
-    def car!(canvas, car)
-      canvas.g.translate(*car.pos).rotate(car.angle) do |c|
-        c.styles(:fill => 'black', :stroke => "black", :stroke_width => 0.1)
-        c.circle(0.5,0,0)
-        c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.25).text(0,0, "%d (%.1f m/s, %d %.1f m)" % [car.number, car.speed, car.next_car_number, car.distance_to_next_obstruction])
-#c.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.2).text(0,0, "(%d,%d)\n(%d,%d)\n%s\n(%d,%d)\n(%d,%d)" % (car.grid_pos + car.next_grid_pos + [car.tile.class] + car.current_path.end_point + car.current_path.end_direction))
-      end
-      canvas.g.translate(*car.tail).rotate(car.angle) do |c|
-        c.styles(:fill => 'black', :stroke => "black", :stroke_width => 0.1)
-        c.circle(0.5,0,0)
-      end
-      canvas.line(*(car.pos+car.tail))
+    def car!(canvas, car, car_graphics)
+#        canvas.g.translate(1,1).matrix(1,0,0,-1,0,0).scale(0.3).text(0,0, "%d (%.1f m/s, %.1f m/s^2, %d %.1f m)" % [car.number, car.speed, car.acceleration, car.next_car_number, car.distance_to_next_obstruction])
+      canvas.use(car_graphics).translate(*car.pos).rotate(car.angle)
     end
 
     def path!(solid, path)
