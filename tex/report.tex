@@ -286,7 +286,22 @@ through the city with one of the other corners as target. For each trial, the
 average time it took for the 40 drive through cars to reach the target was
 measured as output from the trial.
 
-Perhaps this could be captured by a Lattice-Boltzmann equation.
+As can be seen in figure \ref{drivethrough}, the average drive through time
+increases contineously with the number of random cars driving around in the
+city. No specific number of random cars seems to cause a extraordinarily high
+increase in drive through time. If such a number would have been found, it could
+have been said that the city had reached its maximum capacity at that number of
+cars. Because of the defensive strategy that is used to avoid collisions in
+intersections, deadlocks tends to happen if the number of random cars are
+increased above 100. Therefore, values above 100 could not be examined. 
+
+Perhaps this behaviour of the city could be captured by a set of
+Lattice-Boltzmann equations.
+
+Our model can also be used to measure the impact of other parameters. For
+example, it would be interesting to investigate the impact of an increase in
+connectivity (more road tiles on the map) with a fixed number of cars in the
+city.
 
 \section{Discussion}
 This model can simulate traffic flow at the agent level, which is hard to do
