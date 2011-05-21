@@ -6,6 +6,8 @@ RVG::dpi = 144/8
 class Vector
   class << self
     def draw!(cars, tile_grid, time)
+      return if File.exists?("output/#{("%06.2f" % [time]).sub(".", "")}.gif")
+
       grid_size = [tile_grid[0].length,tile_grid.length]
       size = [grid_size[0]*Tile.width,grid_size[1]*Tile.height]
       if @rvg == nil
@@ -120,7 +122,25 @@ class Vector
       s.use(@@turn_lines)
       s.use(@@turn_separating_line)
     end
-    
+
+    @@cross_lines = RVG::Group.new do |s|
+      s.styles(:stroke => 'black', :stroke_width => 0.2)
+      s.line(0, Tile.width/2 + 10, Tile.width/2 - 10, Tile.width/2 + 10)
+      s.line(0, Tile.width/2 - 10, Tile.width/2 - 10, Tile.width/2 - 10)
+
+      s.line(Tile.width/2 + 10, Tile.width/2 + 10, Tile.width, Tile.width/2 + 10)
+      s.line(Tile.width/2 + 10, Tile.width/2 - 10, Tile.width, Tile.width/2 - 10)
+
+      s.line(Tile.width/2 - 10, 0, Tile.width/2 - 10, Tile.width/2 - 10)
+      s.line(Tile.width/2 - 10, Tile.width, Tile.width/2 - 10, Tile.width/2 + 10)
+
+      s.line(Tile.width/2 + 10, 0, Tile.width/2 + 10, Tile.width/2 - 10)
+      s.line(Tile.width/2 + 10, Tile.width, Tile.width/2 + 10, Tile.width/2 + 10)
+    end
+    @@cross_tile = RVG::Group.new do |s|
+      s.use(@@cross_lines)
+    end
+
     def tile!(canvas, tile, x, y)
       canvas.g.translate(x, y) do |solid|
 #        if $debug == true and tile.all_paths != nil
@@ -174,12 +194,13 @@ class Vector
 #            paths = tile.paths([Tile.width,35]) + tile.paths([25,Tile.height]) + tile.paths([35,0])
 #            paths.each { |p| path!(solid,p)}
           when CrossTile
-            paths = []
-            paths += tile.paths([Tile.width,35]) # from east
-            paths += tile.paths([25,Tile.height]) # from north
-            paths += tile.paths([35,0]) # from south
-            paths += tile.paths([0, 25]) # from west
-            paths.each { |p| path!(solid,p)}
+            solid.use(@@cross_tile)
+#            paths = []
+#            paths += tile.paths([Tile.width,35]) # from east
+#            paths += tile.paths([25,Tile.height]) # from north
+#            paths += tile.paths([35,0]) # from south
+#            paths += tile.paths([0, 25]) # from west
+#            paths.each { |p| path!(solid,p)}
           when EmptyTile
           else
             raise "Unknown tile"
