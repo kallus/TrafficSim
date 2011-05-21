@@ -267,18 +267,19 @@ Our simulation is using $\delta = 0.005$ and $W$ set to half of the length of a 
   Target acceleration &$ 1 m/s^2$\\
   Target distance & $3.5 m$\\
   Drive in rate & $3.2 \text{cars}/s$ \\
-  Number of random cars & Varied (0-XX) \\
+  Number of random cars & Varied (0-100) \\
   \end{tabular}
   \end{center}
 \end{table}
 
-Figure \ref{drivethrough} shows the behaiviour of our model. The carrying
-capacity of the city is estimated by measuring the average time it takes for car
+Figure \ref{drivethrough} shows the behaiviour of our model. The 
+efficiency of the city is estimated by measuring the average time it takes for car
 to drive through the city. By having different numbers of cars driving around
 randomly within the city, we can estimate how many cars that can be driving in
 the city without resulting in a lot of queueing time. All parameters, except the
 number of random cars, were held constant during the experiment. Their values
-are presented in table \ref{params}. For each change
+are presented in table \ref{params}. The number of random cars was varied from 0
+to 100. For each change
 in number of random cars, 10 trials were made to decrease the randomness of
 the results. 40 cars, 10 from each corner of the city, were assigned to drive
 through the city with one of the other corners as target. For each trial, the
@@ -286,6 +287,14 @@ average time it took for the 40 drive through cars to reach the target was
 measured as output from the trial.
 
 Perhaps this could be captured by a Lattice-Boltzmann equation.
+
+\section{Discussion}
+This model can simulate traffic flow at the agent level, which is hard to do
+analytically or with a model based on differential equations. With all its
+parameter, the model is adaptable, and could perhaps be used to investigate real
+cities or parts of cities. To make the model more realistic it would need to
+have roads with multiple lanes, and the ability for cars to switch lanes and
+pass slower cars.
 
 \section{MATLAB code}
 \subsection{Plot of analytical solution of simplified ODE}
