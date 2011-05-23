@@ -46,7 +46,7 @@ class Model
   end
   
   def init_town(width, height, connectivity, rand_cars)
-    srand(33)
+    srand(42)
     @tile_grid = MapGenerator.new_map(width, height, connectivity)
     width = @tile_grid.first.length
     height = @tile_grid.length
@@ -59,7 +59,7 @@ class Model
     se = TcrossSTile.new
     @tile_grid.first[width-1] = se
     
-    srand(Time.now.to_i)
+    srand(59)
 
     used_tiles = []
     rand_cars.times do
@@ -75,8 +75,8 @@ class Model
       @cars << Car.new(start[:path], start[:distance], [x,y], self, [])
     end
 
-    cars_per_second = 1.2
-    number_of_cars = 15
+    cars_per_second = 0.088
+    number_of_cars = 20
     @car_creators << CarCreator.new(@cars, self, [0, height-1], nw.paths([0, 25]), cars_per_second, number_of_cars)
     @car_creators << CarCreator.new(@cars, self, [width-1, height-1], ne.paths([Tile.width, 35]), cars_per_second, number_of_cars)
     @car_creators << CarCreator.new(@cars, self, [0, 0], sw.paths([0, 25]), cars_per_second, number_of_cars)
