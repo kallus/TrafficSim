@@ -54,16 +54,16 @@ class TcrossWTile < Tile
     #copy of vertical
     ns = LockablePath.new(lambda {|s| [25, Tile.height-s]}, Tile.height, [25,0]) #entrance from north
     sn = LockablePath.new(lambda {|s| [35, s]}, Tile.height, [35,Tile.height]) #entrance from south
-    @paths << ns
-    @paths << sn
+		@paths << ns
+		@paths << sn
 
     sorter = lambda { |a, b| a.number <=> b.number }
-    es.crossing_paths = [es, sn, ns, ne, en].sort! &sorter
-    se.crossing_paths = [se, ne, sn].sort! &sorter
-    en.crossing_paths = [en, sn, es].sort! &sorter
-    ne.crossing_paths = [ne, sn, es, se, ns].sort! &sorter
-    ns.crossing_paths = [ns, es, ne].sort! &sorter
-    sn.crossing_paths = [sn, ne, es, en, se].sort! &sorter
+    es.crossing_paths = [es, sn, ns, ne].sort! &sorter
+    se.crossing_paths = [se, ne].sort! &sorter
+    en.crossing_paths = [en, sn].sort! &sorter
+    ne.crossing_paths = [ne, sn, es, se].sort! &sorter
+    ns.crossing_paths = [ns, es].sort! &sorter
+    sn.crossing_paths = [sn, ne, es, en].sort! &sorter
 
     @start_positions = []
     @paths.each do |p|
