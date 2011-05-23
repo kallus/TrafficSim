@@ -1,10 +1,10 @@
 require "trafficsim"
 
-settings = {:step => 0.1, :end => 1000, :rand_cars => 60}
+settings = {:step => 0.1, :end => 1000, :rand_cars => 100}
 
 $debug = false
 
-for rand_cars in (41..settings[:rand_cars])
+for rand_cars in (91..settings[:rand_cars])
   10.times do 
     model = Model.new(settings[:step])
     model.init_town(20,15, 0.4, rand_cars)
@@ -35,5 +35,6 @@ for rand_cars in (41..settings[:rand_cars])
     end
     avg_lifetime = avg_lifetime / num_cars
     puts "#{rand_cars} #{avg_lifetime}"
+    STDOUT.flush
   end
 end

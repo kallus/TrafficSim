@@ -1,26 +1,28 @@
 require "trafficsim"
 require "view/vector"
 
-settings = {:step => 0.1, :end => 340, :skip_steps => 20}
+settings = {:step => 0.1, :end => 800, :skip_steps => 1}
 
 $debug = true
 
 srand(33)
-puts rand.to_s if $debug
 
 model = Model.new(settings[:step])
 #model.init_small_town
-#model.init_town(20,15, 0.4, 10)
-model.init_town(10,8, 0.4, 10)
+model.init_town(20, 15, 0.3, 20)
+#model.init_town(10,8, 0.4, 10)
 #model.init_boring_town
 model.init_graph
 
+srand(93)
+puts rand.to_s if $debug
+
 # create a high res map with path numbers
-RVG::dpi = 144/3
-t = model.time
-model.time = -1
-Vector.draw!(model.cars, model.tile_grid, model.time)
-model.time = t
+RVG::dpi = 144/6
+#t = model.time
+#model.time = -1
+#Vector.draw!(model.cars, model.tile_grid, model.time)
+#model.time = t
 #RVG::dpi = 144/8
 
 i = 0
