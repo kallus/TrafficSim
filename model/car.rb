@@ -96,7 +96,7 @@ class Car
     if dtno < 0 or dtno > following_distance
       @acceleration = @max_acceleration
     elsif (dtnc >= 0 and dtnc <= dtno)  # next obstacle is a car
-      if @acceleration < 0.05 and @speed < 0.1
+      if (@acceleration < 0.05 and @speed < 0.1) or dtnc < 0.5
         # we're stopped. start moving only if gap is accepted
         @acceleration = 0
         @speed = 0

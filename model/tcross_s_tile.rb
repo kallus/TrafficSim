@@ -57,7 +57,7 @@ class TcrossSTile < Tile
     @paths << ew
     
     sorter = lambda { |a, b| a.number <=> b.number }
-    en.crossing_paths = [en, wn].sort! &sorter
+    en.crossing_paths = [en].sort! &sorter
     ne.crossing_paths = [ne, wn, we, ew].sort! &sorter
     wn.crossing_paths = [wn, en, we, ew].sort! &sorter
     nw.crossing_paths = [nw, ew].sort! &sorter

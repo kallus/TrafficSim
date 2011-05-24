@@ -61,7 +61,7 @@ class TcrossETile < Tile
     ws.crossing_paths = [ws, ns].sort! &sorter
     sw.crossing_paths = [sw, ns, wn, nw].sort! &sorter
     wn.crossing_paths = [wn, ns, sn, sw].sort! &sorter
-    nw.crossing_paths = [nw, sw].sort! &sorter
+    nw.crossing_paths = [nw].sort! &sorter
     ns.crossing_paths = [ns, sw, wn, ws].sort! &sorter
     sn.crossing_paths = [sn, wn].sort! &sorter
 
